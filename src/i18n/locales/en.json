@@ -131,8 +131,8 @@
     "loadingProfile": "Loading profile...",
     "loadingProfileStatus": "Loading data",
     "unnamedProfile": "Unnamed profile",
-    "joinDiscord": "Join Discord",
-    "githubRepository": "GitHub Repository"
+    "joinDiscord": "Discord",
+    "githubRepository": "GitHub"
   },
   "HomePage": {
     "title": "Arknights: Endfield Pity Tracker (For Real)",
