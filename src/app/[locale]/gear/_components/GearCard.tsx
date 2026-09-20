@@ -26,7 +26,7 @@ const formatSetDescription = (gear: Gear) =>
           : value;
       }
     )
-    .replace(/<[^>]*>/g, '');
+    .replace(/[<>]/g, '');
 
 export const GearCard = ({
   gear,
