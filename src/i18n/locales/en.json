@@ -5,6 +5,8 @@
     "privacyPolicy": "Privacy Policy",
     "termsOfService": "Terms of Service",
     "changelog": "Changelog",
+    "build": "Build",
+    "viewBuildSource": "View this build on GitHub",
     "new": "New"
   },
   "ChangelogPage": {
@@ -129,7 +131,8 @@
     "loadingProfile": "Loading profile...",
     "loadingProfileStatus": "Loading data",
     "unnamedProfile": "Unnamed profile",
-    "joinDiscord": "Join Discord"
+    "joinDiscord": "Join Discord",
+    "githubRepository": "GitHub Repository"
   },
   "HomePage": {
     "title": "Arknights: Endfield Pity Tracker (For Real)",

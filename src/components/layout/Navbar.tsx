@@ -11,7 +11,12 @@ import {
 } from 'react-icons/gi';
 import { Link } from '@/i18n/navigation';
 import { useTranslations } from 'next-intl';
-import { FaClockRotateLeft, FaDiscord, FaUser } from 'react-icons/fa6';
+import {
+  FaClockRotateLeft,
+  FaDiscord,
+  FaGithub,
+  FaUser,
+} from 'react-icons/fa6';
 import { TiArrowSortedDown } from 'react-icons/ti';
 import { CONFIG } from '@/config';
 import { useStorageStore } from '@/store/useStorageStore';
@@ -145,14 +150,26 @@ export const Navbar = ({ onClick }: NavbarProps) => {
         </div>
       </div>
       <div className="shrink-0 p-2 pt-0">
-        <Link
-          href={CONFIG.discordUrl}
-          target="_blank"
-          className="flex cursor-pointer items-center justify-center gap-2 rounded-xl px-4 py-3 transition duration-300 hover:bg-[#5865F2] active:bg-[#5865F2]/90"
-        >
-          <FaDiscord size={24} />
-          <span className="truncate">{t('joinDiscord')}</span>
-        </Link>
+        <div className="grid grid-cols-2 gap-1">
+          <Link
+            href={CONFIG.discordUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex min-w-0 cursor-pointer items-center justify-center gap-2 rounded-xl px-2 py-3 text-sm transition duration-300 hover:bg-[#5865F2] active:bg-[#5865F2]/90"
+          >
+            <FaDiscord size={22} className="shrink-0" />
+            <span className="truncate">{t('joinDiscord')}</span>
+          </Link>
+          <Link
+            href={CONFIG.repositoryUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex min-w-0 cursor-pointer items-center justify-center gap-2 rounded-xl px-2 py-3 text-sm transition duration-300 hover:bg-white/10 active:bg-white/15"
+          >
+            <FaGithub size={22} className="shrink-0" />
+            <span className="truncate">{t('githubRepository')}</span>
+          </Link>
+        </div>
 
         <div className="mx-2 my-2 h-px bg-white/8" />
 
