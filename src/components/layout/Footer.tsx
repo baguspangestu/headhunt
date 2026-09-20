@@ -4,6 +4,10 @@ import { useTranslations } from 'next-intl';
 
 export const Footer = () => {
   const t = useTranslations('App');
+  const buildUrl =
+    CONFIG.buildId === 'development'
+      ? CONFIG.repositoryUrl
+      : `${CONFIG.repositoryUrl}/commit/${CONFIG.buildId}`;
 
   return (
     <footer className="w-full bg-neutral-800/80 p-4 lg:rounded-xl">
@@ -37,8 +41,16 @@ export const Footer = () => {
                 Discord
               </Link> */}
             </div>
-            <div className="flex items-center justify-center lg:justify-end">
-              <span>Build ID: {CONFIG.buildId}</span>
+            <div className="flex items-center justify-center gap-1 lg:justify-end">
+              <span>{t('build')}:</span>
+              <Link
+                href={buildUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-mono text-white/90 transition-colors hover:text-yellow-400"
+              >
+                {CONFIG.buildId}
+              </Link>
             </div>
           </div>
         </div>

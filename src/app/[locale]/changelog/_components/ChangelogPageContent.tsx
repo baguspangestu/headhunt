@@ -8,6 +8,7 @@ import {
   FaCloudArrowUp,
   FaFileArrowDown,
   FaGlobe,
+  FaGithub,
   FaHouse,
   FaImage,
   FaList,
@@ -29,6 +30,7 @@ const releases = [
       { key: 'backupRestore', icon: FaFileArrowDown },
       { key: 'profileManagement', icon: FaUserGroup },
       { key: 'notifications', icon: FaRotate },
+      { key: 'openSource', icon: FaGithub },
     ],
   },
   {

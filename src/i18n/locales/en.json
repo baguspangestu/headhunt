@@ -5,6 +5,7 @@
     "privacyPolicy": "Privacy Policy",
     "termsOfService": "Terms of Service",
     "changelog": "Changelog",
+    "build": "Build",
     "new": "New"
   },
   "ChangelogPage": {
@@ -31,6 +32,10 @@
       "notifications": {
         "title": "Clearer Process Status",
         "description": "Import, sync, backup, and restore now use more consistent, responsive, and easier-to-understand notifications."
+      },
+      "openSource": {
+        "title": "Now Open Source",
+        "description": "The project is now public on GitHub with contribution guidelines, automated quality checks, security reporting, direct repository navigation, and build links to the exact source commit."
       }
     },
     "latestReleaseTitle": "Clearer Tracking, Sharing, and Site Insights",
@@ -129,7 +134,8 @@
     "loadingProfile": "Loading profile...",
     "loadingProfileStatus": "Loading data",
     "unnamedProfile": "Unnamed profile",
-    "joinDiscord": "Join Discord"
+    "joinDiscord": "Discord",
+    "githubRepository": "GitHub"
   },
   "HomePage": {
     "title": "Arknights: Endfield Pity Tracker (For Real)",

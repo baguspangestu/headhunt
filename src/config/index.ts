@@ -2,6 +2,7 @@ export const CONFIG = {
   appName: 'Headhunt.cc',
   appShortName: 'Headhunt',
   buildId: process.env.NEXT_PUBLIC_BUILD_ID ?? 'development',
+  repositoryUrl: 'https://github.com/baguspangestu/headhunt',
   baseUrl:
     process.env.NODE_ENV === 'production'
       ? 'https://headhunt.cc'
