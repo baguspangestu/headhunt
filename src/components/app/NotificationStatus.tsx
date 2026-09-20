@@ -36,7 +36,7 @@ export const NotificationStatus = () => {
       aria-live={notification?.type === 'error' ? 'assertive' : 'polite'}
       aria-atomic="true"
       className={clsx(
-        'fixed top-[4.25rem] left-1/2 z-60 flex w-[calc(100%-1.5rem)] max-w-sm -translate-x-1/2 items-start gap-3 overflow-hidden rounded-xl p-3 shadow-xl shadow-black/30 backdrop-blur-md transition-all duration-300 ease-out sm:top-[4.5rem] sm:p-4',
+        'fixed top-17 left-1/2 z-60 flex w-[calc(100%-1.5rem)] max-w-sm -translate-x-1/2 items-start gap-3 overflow-hidden rounded-xl p-3 shadow-xl shadow-black/30 backdrop-blur-md transition-all duration-300 ease-out sm:top-18 sm:p-4',
         notification?.type === 'error'
           ? 'bg-red-950/95 text-red-300'
           : 'bg-emerald-950/95 text-emerald-300',

@@ -50,7 +50,7 @@ export const Tabs = ({
         role="tablist"
         aria-label="Platform"
         onKeyDown={handleKeyDown}
-        className="mb-4 flex [scrollbar-width:none] gap-1.5 overflow-x-auto overscroll-x-contain rounded-xl bg-neutral-950/50 p-1.5 [&::-webkit-scrollbar]:hidden"
+        className="mb-4 flex scrollbar-none gap-1.5 overflow-x-auto overscroll-x-contain rounded-xl bg-neutral-950/50 p-1.5 [&::-webkit-scrollbar]:hidden"
       >
         {tabs.map((tab, index) => (
           <button
