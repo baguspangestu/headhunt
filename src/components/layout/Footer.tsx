@@ -48,7 +48,6 @@ export const Footer = () => {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="font-mono text-white/90 transition-colors hover:text-yellow-400"
-                title={t('viewBuildSource')}
               >
                 {CONFIG.buildId}
               </Link>
