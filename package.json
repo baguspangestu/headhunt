@@ -54,10 +54,10 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
-    "@types/node": "^26.6.1",
+    "@types/node": "^20.19.43",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
-    "eslint": "^10",
+    "eslint": "^9.39.5",
     "eslint-config-next": "^16.3.5",
     "eslint-config-prettier": "^10.1.8",
     "prettier": "^3.9.7",
@@ -66,7 +66,7 @@
     "sharp": "^0.35.4",
     "tailwindcss": "^4",
     "tsx": "^4.23.13",
-    "typescript": "^7.0.2",
+    "typescript": "^5.9.3",
     "wrangler": "^4.133.0"
   }
 }
