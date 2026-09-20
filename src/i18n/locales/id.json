@@ -33,6 +33,10 @@
       "notifications": {
         "title": "Status Proses Lebih Jelas",
         "description": "Import, sync, backup, dan restore kini memakai notifikasi yang lebih konsisten, responsif, dan mudah dipahami."
+      },
+      "openSource": {
+        "title": "Kini Open Source",
+        "description": "Proyek kini tersedia untuk publik di GitHub dengan panduan kontribusi, pemeriksaan kualitas otomatis, pelaporan keamanan, navigasi langsung ke repositori, dan tautan build menuju commit sumber yang tepat."
       }
     },
     "latestReleaseTitle": "Tracker, Berbagi, dan Insight Situs yang Lebih Jelas",
