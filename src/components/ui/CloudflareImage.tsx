@@ -11,9 +11,12 @@ export const CloudflareImage = ({
   decoding = 'async',
   ...props
 }: CloudflareImageProps) => {
-  const isDev = process.env.NODE_ENV === 'development';
+  const useCloudflareImageTransformations =
+    process.env.NEXT_PUBLIC_CLOUDFLARE_IMAGE_TRANSFORMATIONS === 'true';
   const assetPath = `/assets/${src}.png`;
-  const finalSrc = isDev ? assetPath : `/cdn-cgi/image/format=auto${assetPath}`;
+  const finalSrc = useCloudflareImageTransformations
+    ? `/cdn-cgi/image/format=auto${assetPath}`
+    : assetPath;
 
   return (
     // Asset images are optimized by Cloudflare at the edge, not Next.js.

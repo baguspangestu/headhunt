@@ -24,7 +24,7 @@
     "format:check": "prettier --check .",
     "check": "npm run lint && npm run typecheck && npm run test && npm run format:check",
     "format": "prettier --write .",
-    "predeploy": "node scripts/check-deploy.mjs",
+    "predeploy": "node check-deploy.mjs",
     "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
     "upload": "opennextjs-cloudflare build && opennextjs-cloudflare upload",
     "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview --host 0.0.0.0",

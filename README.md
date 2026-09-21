@@ -89,11 +89,13 @@ hash as the filename. Because changing an image also changes its URL, these
 files are served with a one-year immutable browser cache through
 `public/_headers`.
 
-In production, `CloudflareImage` serves catalog images through
-`/cdn-cgi/image/format=auto/...` so Cloudflare can select an efficient image
-format. Local UI icons in the root of `public/` are served directly as Workers
-Static Assets. The project does not use the Next.js Image component or an Images
-binding.
+The `deploy` and `upload` scripts automatically enable Cloudflare image
+transformations, so `CloudflareImage` serves catalog images through
+`/cdn-cgi/image/format=auto/...` and Cloudflare can select an efficient image
+format. Local `build`, `start`, and `dev` scripts serve catalog images directly
+from `/assets/...`. Local UI icons in the root of `public/` are served directly
+as Workers Static Assets. The project does not use the Next.js Image component
+or an Images binding.
 
 ## Google Drive backups
 
@@ -139,32 +141,32 @@ in `wrangler.jsonc`, or replace its name with your own bucket:
 npx wrangler r2 bucket create headhunt-opennext-cache
 ```
 
-For a normal local deployment, commit and push the exact revision first:
+For a normal local deployment, commit the exact revision first:
 
 ```bash
 npm run check
 git add .
 git commit -m "Describe the change"
-git push
 npm run deploy
 ```
 
-`npm run deploy` automatically runs `scripts/check-deploy.mjs` before building.
-For a Git clone or fork, deployment is stopped when the working tree is dirty,
-the current branch has no upstream, or local commits have not been pushed. The
-upstream is detected dynamically, so forks deploy against their own repository
-rather than this repository.
+`npm run deploy` automatically runs `check-deploy.mjs` before building.
+For a Git clone or fork, deployment is stopped when the working tree is dirty so
+the Build ID always identifies the exact deployed source. A local commit does
+not need an upstream branch and does not need to be pushed before deployment.
 
 Downloaded source archives do not contain `.git`; in that case the Git check is
 skipped with a warning and deployment is allowed. Clean CI checkouts, including
-GitHub Actions and Cloudflare builds, also skip the local upstream check because
-their revision already originates from the remote repository.
+GitHub Actions and Cloudflare builds, pass the same clean-working-tree check.
 
-The footer displays a seven-character Git commit SHA as the Build ID. Builds
-use `GITHUB_SHA` or `CF_PAGES_COMMIT_SHA` when available, then fall back to the
-local Git `HEAD`. Builds from a source archive without Git metadata use the
-package version instead. The value is embedded during the build and does not
-make a runtime API request.
+The footer displays `development` for `npm run dev`, `preview` for
+`npm run preview`, and `local` when a regular local build contains uncommitted
+changes. Clean builds display a seven-character Git commit SHA, using
+`GITHUB_SHA` or `CF_PAGES_COMMIT_SHA` when available and otherwise the local Git
+`HEAD`. Builds from a source archive without Git metadata use the package
+version. Only SHA values link directly to a commit; other values link to the
+repository. The value is embedded during the build and does not make a runtime
+API request.
 
 ## Contributing and security
 

@@ -4,10 +4,10 @@ import { useTranslations } from 'next-intl';
 
 export const Footer = () => {
   const t = useTranslations('App');
-  const buildUrl =
-    CONFIG.buildId === 'development'
-      ? CONFIG.repositoryUrl
-      : `${CONFIG.repositoryUrl}/commit/${CONFIG.buildId}`;
+  const isCommitBuild = /^[0-9a-f]{7}$/i.test(CONFIG.buildId);
+  const buildUrl = isCommitBuild
+    ? `${CONFIG.repositoryUrl}/commit/${CONFIG.buildId}`
+    : CONFIG.repositoryUrl;
 
   return (
     <footer className="w-full bg-neutral-800/80 p-4 lg:rounded-xl">
