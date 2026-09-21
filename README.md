@@ -177,7 +177,7 @@ not through a public issue.
 Original project source code is available under the [MIT License](LICENSE).
 Game names, artwork, icons, data, and other third-party material remain the
 property of their respective owners and are not granted under that license.
-See [NOTICE.md](NOTICE.md) for details.
+See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) for details.
 
 Headhunt is an unofficial fan-made project and is not affiliated with or
 endorsed by HYPERGRYPH or GRYPHLINE.
