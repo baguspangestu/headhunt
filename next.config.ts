@@ -5,7 +5,7 @@ import { networkInterfaces } from 'node:os';
 
 const buildId = (() => {
   if (process.env.NODE_ENV === 'development') return 'development';
-  if (process.env.npm_lifecycle_event === 'preview') return 'preview';
+  if (process.env.HEADHUNT_BUILD_MODE === 'preview') return 'preview';
 
   const commitSha = process.env.GITHUB_SHA ?? process.env.CF_PAGES_COMMIT_SHA;
   if (commitSha) return commitSha.slice(0, 7);
@@ -27,8 +27,7 @@ const buildId = (() => {
 })();
 
 const cloudflareImageTransformations =
-  process.env.NEXT_PUBLIC_CLOUDFLARE_IMAGE_TRANSFORMATIONS ??
-  String(['deploy', 'upload'].includes(process.env.npm_lifecycle_event ?? ''));
+  process.env.NEXT_PUBLIC_CLOUDFLARE_IMAGE_TRANSFORMATIONS ?? 'false';
 
 const localNetworkOrigins = Object.values(networkInterfaces())
   .flatMap((network) => network ?? [])

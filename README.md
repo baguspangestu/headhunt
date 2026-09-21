@@ -89,13 +89,13 @@ hash as the filename. Because changing an image also changes its URL, these
 files are served with a one-year immutable browser cache through
 `public/_headers`.
 
-The `deploy` and `upload` scripts automatically enable Cloudflare image
-transformations, so `CloudflareImage` serves catalog images through
-`/cdn-cgi/image/format=auto/...` and Cloudflare can select an efficient image
-format. Local `build`, `start`, and `dev` scripts serve catalog images directly
-from `/assets/...`. Local UI icons in the root of `public/` are served directly
-as Workers Static Assets. The project does not use the Next.js Image component
-or an Images binding.
+The `deploy` and `upload` scripts build through `cloudflare-build.mjs`, which
+explicitly enables Cloudflare image transformations. `CloudflareImage` then
+serves catalog images through `/cdn-cgi/image/format=auto/...` so Cloudflare can
+select an efficient image format. The `preview`, `build`, `start`, and `dev`
+scripts serve catalog images directly from `/assets/...`. Local UI icons in the
+root of `public/` are served directly as Workers Static Assets. The project does
+not use the Next.js Image component or an Images binding.
 
 ## Google Drive backups
 
