@@ -253,6 +253,9 @@ export const TrackerPageContent = ({
         <aside className="min-w-0 xl:sticky xl:top-20 xl:h-fit">
           <div className="overflow-hidden rounded-xl xl:bg-neutral-900/35">
             <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 xl:flex xl:max-h-[calc(100dvh-9.5rem)] xl:flex-col xl:overflow-y-auto xl:overscroll-contain xl:pr-1.5">
+              <p className="rounded-xl border border-amber-400/20 bg-amber-400/10 px-4 py-3 text-xs leading-relaxed text-amber-100/90 sm:col-span-2">
+                {t('refactorAnnouncement')}
+              </p>
               {sidebarTypes.map((type) => {
                 const isWeaponBanner = type.id.startsWith('weponbox_');
                 const typeStats = hasHydrated

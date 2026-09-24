@@ -212,5 +212,19 @@ export const bannerPoolConfig = {
       img: 'https://web-static.hg-cdn.com/upload/image/20260831/1fa64d6d6c246d14746eae5817dec485.jpg',
       startAt: '2026-09-02T06:00:00+08:00',
     },
+
+    //? Yvone
+    {
+      id: 'rerun_chr_yvonne',
+      img: 'https://web-static.hg-cdn.com/upload/image/20260921/8332e32596156417acede2d21dea5a8a.jpg',
+      startAt: '2026-09-24T12:00:00+08:00',
+      endAt: '2026-10-15T05:59:59+08:00',
+    },
+    {
+      id: 'rerun_wpn_yvonne',
+      img: 'https://web-static.hg-cdn.com/upload/image/20260921/7b69b7da6fc5f0389e648ebece2325a8.jpg',
+      startAt: '2026-09-24T12:00:00+08:00',
+      endAt: '2026-10-15T05:59:59+08:00',
+    },
   ],
 } as const;

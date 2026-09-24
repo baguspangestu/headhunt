@@ -1,4 +1,6 @@
 export enum HeadhuntTypeId {
+  RerunChr = 'rerun_chr',
+  RerunWpn = 'rerun_wpn',
   Special = 'special',
   Weponbox = 'weponbox',
   Joint = 'joint',
@@ -17,6 +19,23 @@ export type HeadhuntType = {
 };
 
 export const headhuntTypes: HeadhuntType[] = [
+  // {
+  //   id: HeadhuntTypeId.RerunChr,
+  //   endpoint: '/api/record/char',
+  //   poolType: 'E_CharacterGachaPoolType_Rerun',
+  //   icon: '06de2c368f97038bccf5fef4ff7585925473b7ccb89495bf9d2decb1365899d6',
+  //   r6PityLimit: 80,
+  //   r5PityLimit: 10,
+  //   guaranteeAt: 120,
+  // },
+  // {
+  //   id: HeadhuntTypeId.RerunWpn,
+  //   endpoint: '/api/record/weapon',
+  //   icon: '94458bfcc06abacd6d104c73762809f9957d699d822d4b65860530aae2d99b1b',
+  //   r6PityLimit: 40,
+  //   r5PityLimit: 10,
+  //   guaranteeAt: 80,
+  // },
   {
     id: HeadhuntTypeId.Special,
     endpoint: '/api/record/char',
