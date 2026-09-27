@@ -34,6 +34,14 @@ npm run build
 Raw upstream responses live under `raw/`. Scripts in `scripts/` transform them
 into the locale-specific JSON consumed from `src/data/`.
 
+To fetch and regenerate all data in dependency order, run:
+
+```bash
+npm run data:update
+```
+
+The command runs the guide, wiki catalog, wiki detail, and game pool collectors before generating content, gear, and banners. It stops if any step fails. The SKPort collectors may open a browser for login. The game pool collector only fetches locale files that are missing locally.
+
 Common commands:
 
 ```bash
@@ -42,7 +50,23 @@ npm run generate:gear
 npm run generate:banner
 npm run get:pool
 npm run get:guide
+npm run get:wiki-catalog
+npm run get:wiki-detail
 ```
+
+`get:guide` fetches SKPort guide JSON directly from the signed API. On the first
+run, it opens a Chrome window for you to log in to SKPort. Once the session is
+valid, the window closes and the API fetch continues automatically. Later runs
+reuse the login session in `.data/puppeteer-profile`. The optional
+`SKPORT_DEVICE_ID` can be supplied when the session requires a device ID.
+Credentials are never written to the generated JSON. The previous browser-based
+collector remains available as `npm run get:guide:puppeteer`.
+
+`npm run get:wiki-catalog` fetches catalogs for all 14 languages. Run it before
+`npm run get:wiki-detail`, which fetches details for enabled languages using four
+concurrent API requests. Both reuse the same local SKPort login session as
+`get:guide`. The previous browser collectors remain available as
+`get:wiki-catalog:puppeteer` and `get:wiki-detail:puppeteer`.
 
 ## Project structure
 

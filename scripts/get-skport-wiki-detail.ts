@@ -1,47 +1,38 @@
-import fs from 'fs/promises';
+import { readFile, mkdir, writeFile } from 'node:fs/promises';
+import path from 'node:path';
+import { setTimeout as delay } from 'node:timers/promises';
 import { CONFIG } from '@/config';
-import type { Browser, HTTPResponse } from 'puppeteer-core';
-import puppeteer from 'puppeteer-core';
-import { mkdir, writeFile } from 'fs/promises';
-import path from 'path';
-import type { SKPortWikiCatalog } from './types/skport-wiki-catalog';
-import type { SKPortWikiDetailOperator } from './types/skport-wiki-detail-operator';
+import {
+  getAuthenticatedSkportSession,
+  signedGet,
+  SkportApiError,
+  type SkportSession,
+} from './lib/skport-api';
 import { logger, runScript } from './lib/logger';
-import { browserConfig } from './config/browser';
+import type { SKPortWikiCatalog } from './types/skport-wiki-catalog';
+import type { SKPortWikiDetailResponse } from './types/skport-wiki-detail';
 
-const dir = process.cwd();
-
-const paths = {
-  rawCatalog: path.join(dir, 'raw/skport/wiki/catalog'),
-} as const;
-
-const pageUrl = 'https://wiki.skport.com/endfield/detail';
-
-const subIds: Record<string, string> = {
+const catalogDir = path.join(process.cwd(), 'raw', 'skport', 'wiki', 'catalog');
+const detailDir = path.join(process.cwd(), 'raw', 'skport', 'wiki', 'detail');
+const detailPath = '/web/v1/wiki/item/info';
+const categories = {
   '1': 'operators',
   '2': 'weapons',
   '4': 'gear',
+} as const;
+const concurrency = 4;
+const maxAttempts = 3;
+
+type CategoryId = keyof typeof categories;
+type Locale = (typeof CONFIG.locales)[number];
+type DetailTask = {
+  locale: Locale;
+  category: (typeof categories)[CategoryId];
+  itemId: string;
+  slug: string;
 };
 
-async function readJsonFiles<T>(dir: string): Promise<Record<string, T>> {
-  const files = await fs.readdir(dir);
-  const data: Record<string, T> = {};
-
-  for (const file of files) {
-    const content = await fs.readFile(path.join(dir, file), 'utf-8');
-    data[file] = JSON.parse(content);
-  }
-
-  return data;
-}
-
-async function saveJson(dir: string, locale: string, data: unknown) {
-  await mkdir(dir, { recursive: true });
-  const filePath = path.join(dir, `${locale}.json`);
-  await writeFile(filePath, JSON.stringify(data), 'utf-8');
-}
-
-function generateSlug(title: string) {
+function generateSlug(title: string): string {
   return title
     .toLowerCase()
     .trim()
@@ -49,172 +40,201 @@ function generateSlug(title: string) {
     .replace(/^-+|-+$/g, '');
 }
 
-function buildSlugMap(
-  json: SKPortWikiCatalog
-): Record<string, Record<string, string>> {
-  const result: Record<string, Record<string, string>> = {};
-
-  const subData = json.data.catalog.find((e) => e.id === '1')?.typeSub;
-
-  const items = Object.entries(subIds).flatMap(
-    ([subId]) =>
-      subData
-        ?.find((e) => e.id === subId)
-        ?.items.map((item) => ({
-          subId,
-          itemId: item.itemId,
-          itemName: item.name,
-        })) ?? []
+async function readCatalog(localeId: string): Promise<SKPortWikiCatalog> {
+  const content = await readFile(
+    path.join(catalogDir, `${localeId}.json`),
+    'utf8'
   );
-
-  for (const item of items) {
-    if (!result[item.subId]) result[item.subId] = {};
-    result[item.subId][item.itemId] = generateSlug(item.itemName);
+  const catalog = JSON.parse(content) as SKPortWikiCatalog;
+  if (catalog.code !== 0 || !Array.isArray(catalog.data?.catalog)) {
+    throw new Error(
+      `Invalid wiki catalog for ${localeId}; run npm run get:wiki-catalog`
+    );
   }
-
-  return result;
+  return catalog;
 }
 
-async function fetchItem(
-  browser: Browser,
-  item: { subId: string; path: string; itemId: string },
-  localeId: string,
-  region: string
-): Promise<SKPortWikiDetailOperator | null> {
-  for (let attempt = 1; attempt <= Infinity; attempt++) {
-    const page = await browser.newPage();
+function getItems(catalog: SKPortWikiCatalog, categoryId: CategoryId) {
+  const mainType = catalog.data.catalog.find((entry) => entry.id === '1');
+  const category = mainType?.typeSub.find((entry) => entry.id === categoryId);
+  if (!category || !Array.isArray(category.items)) {
+    throw new Error(`Wiki catalog is missing category ${categoryId}`);
+  }
+  return category.items;
+}
 
-    try {
-      let found = false;
-
-      const data: SKPortWikiDetailOperator | null = await new Promise(
-        async (resolve) => {
-          const timeout = setTimeout(() => {
-            if (!found) resolve(null);
-          }, 8000);
-
-          page.on('response', async (response: HTTPResponse) => {
-            const url = response.url();
-
-            if (!url.includes(`/web/v1/wiki/item/info?id=${item.itemId}`))
-              return;
-
-            try {
-              const json = (await response.json()) as SKPortWikiDetailOperator;
-
-              if (json.code !== 0) return;
-
-              found = true;
-              clearTimeout(timeout);
-              resolve(json);
-            } catch {
-              resolve(null);
-            }
-          });
-
-          await page.evaluateOnNewDocument((region: string) => {
-            localStorage.setItem(
-              'SK_THEME_INFO',
-              JSON.stringify({
-                region,
-                lang: 'en',
-                device: 'desktop',
-                color: 'dark',
-                nativeColor: 'dark',
-              })
-            );
-          }, region);
-
-          await page.goto(
-            `${pageUrl}?mainTypeId=1&subTypeId=${item.subId}&gameEntryId=${item.itemId}`,
-            { waitUntil: 'domcontentloaded' }
-          );
-        }
-      );
-
-      await page.close();
-
-      if (data) return data;
-
-      logger.warn(`[${localeId}] Retrying ${item.path} (attempt ${attempt})`);
-
-      await new Promise((r) => setTimeout(r, 1000));
-    } catch {
-      await page.close();
+function buildTasks(
+  englishCatalog: SKPortWikiCatalog,
+  catalogs: Map<string, SKPortWikiCatalog>
+): DetailTask[] {
+  const slugs = new Map<string, string>();
+  for (const categoryId of Object.keys(categories) as CategoryId[]) {
+    for (const item of getItems(englishCatalog, categoryId)) {
+      const slug = generateSlug(item.name);
+      if (!slug) throw new Error(`Empty English slug for item ${item.itemId}`);
+      slugs.set(`${categoryId}:${item.itemId}`, slug);
     }
   }
 
-  return null;
+  const tasks: DetailTask[] = [];
+  for (const locale of CONFIG.locales.filter((entry) => entry.enable)) {
+    const catalog = catalogs.get(locale.id);
+    if (!catalog) throw new Error(`Missing wiki catalog for ${locale.id}`);
+    for (const categoryId of Object.keys(categories) as CategoryId[]) {
+      for (const item of getItems(catalog, categoryId)) {
+        const slug = slugs.get(`${categoryId}:${item.itemId}`);
+        if (!slug) {
+          throw new Error(
+            `No English slug for ${locale.id} item ${item.itemId}`
+          );
+        }
+        tasks.push({
+          locale,
+          category: categories[categoryId],
+          itemId: item.itemId,
+          slug,
+        });
+      }
+    }
+  }
+  return tasks;
+}
+
+function isRetryable(error: unknown): boolean {
+  return (
+    (error instanceof SkportApiError &&
+      (error.status === 429 || error.status >= 500)) ||
+    error instanceof TypeError ||
+    (error instanceof Error && error.name === 'TimeoutError')
+  );
+}
+
+async function fetchDetail(
+  task: DetailTask,
+  session: SkportSession,
+  cred: string,
+  deviceId: string
+): Promise<SKPortWikiDetailResponse> {
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    try {
+      const response = await signedGet<SKPortWikiDetailResponse>(
+        detailPath,
+        new URLSearchParams({ id: task.itemId }),
+        task.locale.region,
+        session,
+        cred,
+        deviceId
+      );
+      if (response.data?.item?.itemId !== task.itemId) {
+        throw new Error('SKPort returned a different or empty wiki item');
+      }
+      return response;
+    } catch (error) {
+      if (attempt === maxAttempts || !isRetryable(error)) {
+        throw new Error(
+          `Failed to fetch ${task.category}/${task.slug} [${task.locale.id}]`,
+          { cause: error }
+        );
+      }
+      const waitMs = 500 * 2 ** (attempt - 1);
+      const reason =
+        error instanceof SkportApiError
+          ? `HTTP ${error.status}, API code ${error.code}`
+          : error instanceof Error
+            ? error.name
+            : 'Unknown error';
+      logger.warn(
+        `Retrying ${task.category}/${task.slug} [${task.locale.id}] (${attempt + 1}/${maxAttempts}) in ${waitMs}ms: ${reason}`
+      );
+      await delay(waitMs);
+    }
+  }
+  throw new Error('Unexpected retry state');
+}
+
+async function fetchAll(
+  tasks: DetailTask[],
+  session: SkportSession,
+  cred: string,
+  deviceId: string
+): Promise<SKPortWikiDetailResponse[]> {
+  const results: (SKPortWikiDetailResponse | undefined)[] = new Array(
+    tasks.length
+  );
+  let nextIndex = 0;
+  let completed = 0;
+  let firstError: unknown;
+
+  await Promise.all(
+    Array.from({ length: Math.min(concurrency, tasks.length) }, async () => {
+      while (firstError === undefined) {
+        const index = nextIndex++;
+        if (index >= tasks.length) return;
+        try {
+          results[index] = await fetchDetail(
+            tasks[index],
+            session,
+            cred,
+            deviceId
+          );
+          completed++;
+          if (completed % 25 === 0 || completed === tasks.length) {
+            logger.info(`Fetched ${completed}/${tasks.length} wiki details`);
+          }
+        } catch (error) {
+          firstError = error;
+        }
+      }
+    })
+  );
+  if (firstError) throw firstError;
+  if (results.some((response) => !response)) {
+    throw new Error('Some wiki details were not fetched');
+  }
+  return results as SKPortWikiDetailResponse[];
 }
 
 async function main() {
-  const browser = await puppeteer.launch({
-    ...browserConfig,
-    headless: true,
-  });
+  const enabledLocales = CONFIG.locales.filter((locale) => locale.enable);
+  const catalogs = new Map<string, SKPortWikiCatalog>();
+  for (const localeId of new Set([
+    'en',
+    ...enabledLocales.map((locale) => locale.id),
+  ])) {
+    catalogs.set(localeId, await readCatalog(localeId));
+  }
+  const tasks = buildTasks(catalogs.get('en')!, catalogs);
+  if (tasks.length === 0) throw new Error('No wiki detail items in catalog');
 
-  const catalogMap = await readJsonFiles<SKPortWikiCatalog>(paths.rawCatalog);
-
-  const slugMap = buildSlugMap(catalogMap['en.json']);
-
-  const localesMap = Object.fromEntries(
-    CONFIG.locales.filter((e) => e.enable).map((e) => [e.id, e])
+  const { cred, session, deviceId } = await getAuthenticatedSkportSession(
+    (candidate, signingSession, currentDeviceId) =>
+      signedGet<SKPortWikiDetailResponse>(
+        detailPath,
+        new URLSearchParams({ id: tasks[0].itemId }),
+        tasks[0].locale.region,
+        signingSession,
+        candidate,
+        currentDeviceId
+      )
   );
 
-  for (const [file, json] of Object.entries(catalogMap)) {
-    const subData = json.data.catalog.find((e) => e.id === '1')?.typeSub;
+  logger.info(
+    `Fetching ${tasks.length} wiki details for ${enabledLocales.length} languages (${concurrency} concurrent)`
+  );
+  const results = await fetchAll(tasks, session, cred, deviceId);
 
-    const items = Object.entries(subIds).flatMap(
-      ([subId, path]) =>
-        subData
-          ?.find((e) => e.id === subId)
-          ?.items.map((item) => ({
-            subId,
-            path,
-            itemId: item.itemId,
-          })) ?? []
+  logger.info(`Saving ${results.length} wiki detail files`);
+  for (const [index, task] of tasks.entries()) {
+    const outputDir = path.join(detailDir, task.category, task.slug);
+    await mkdir(outputDir, { recursive: true });
+    await writeFile(
+      path.join(outputDir, `${task.locale.id}.json`),
+      JSON.stringify(results[index])
     );
-
-    const localeId = file.split('.')[0];
-    if (!localesMap[localeId]) continue;
-
-    const total = items.length;
-    let current = 0;
-
-    logger.info(`[${localeId}] ${total} items found`);
-
-    for (const item of items) {
-      logger.info(`[${localeId}] ${++current}/${total} loading`);
-
-      const res = await fetchItem(
-        browser,
-        item,
-        localeId,
-        localesMap[localeId].region
-      );
-
-      if (!res) {
-        logger.error(`[${localeId}] Failed to load ${item.path}`);
-        continue;
-      }
-
-      const rawDir = path.join(
-        dir,
-        'raw/skport/wiki/detail/',
-        item.path,
-        slugMap[item.subId][item.itemId]
-      );
-
-      await saveJson(rawDir, localeId, res);
-
-      logger.success(
-        `[${localeId}] Saved ${item.path}`,
-        slugMap[item.subId][item.itemId]
-      );
-    }
   }
-
-  await browser.close();
+  logger.success(
+    `Saved ${results.length} wiki detail files to raw/skport/wiki/detail`
+  );
 }
 
 runScript('SKPort wiki detail fetch', main);
