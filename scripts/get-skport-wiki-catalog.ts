@@ -1,82 +1,75 @@
+import { mkdir, writeFile } from 'node:fs/promises';
+import path from 'node:path';
 import { CONFIG } from '@/config';
-import puppeteer from 'puppeteer-core';
-import { mkdir, writeFile } from 'fs/promises';
-import path from 'path';
-import type { SKPortWikiCatalog } from './types/skport-wiki-catalog';
+import {
+  getAuthenticatedSkportSession,
+  signedGet,
+  type SkportSession,
+} from './lib/skport-api';
 import { logger, runScript } from './lib/logger';
-import { browserConfig } from './config/browser';
+import type { SKPortWikiCatalog } from './types/skport-wiki-catalog';
 
-const pageUrl = 'https://wiki.skport.com/endfield';
-const endpoints: Record<string, string> = {
-  'catalog?typeMainId=1': 'catalog',
-};
+const catalogPath = '/web/v1/wiki/item/catalog';
+const outputDir = path.join(process.cwd(), 'raw', 'skport', 'wiki', 'catalog');
 
-const dir = process.cwd();
-
-async function saveJson(type: string, locale: string, data: unknown) {
-  const rawSkportWikiDir = path.join(dir, 'raw/skport/wiki/', type);
-  await mkdir(rawSkportWikiDir, { recursive: true });
-  const filePath = path.join(rawSkportWikiDir, `${locale}.json`);
-  await writeFile(filePath, JSON.stringify(data), 'utf-8');
+async function fetchCatalog(
+  region: string,
+  session: SkportSession,
+  cred: string,
+  deviceId: string
+): Promise<SKPortWikiCatalog> {
+  const response = await signedGet<SKPortWikiCatalog>(
+    catalogPath,
+    new URLSearchParams({ typeMainId: '1' }),
+    region,
+    session,
+    cred,
+    deviceId
+  );
+  if (!Array.isArray(response.data?.catalog)) {
+    throw new Error('SKPort returned an invalid wiki catalog');
+  }
+  return response;
 }
 
 async function main() {
-  const browser = await puppeteer.launch({
-    ...browserConfig,
-    headless: true,
-  });
+  const { cred, session, deviceId } = await getAuthenticatedSkportSession(
+    (candidate, signingSession, currentDeviceId) =>
+      fetchCatalog('en', signingSession, candidate, currentDeviceId)
+  );
 
-  for (const locale of CONFIG.locales) {
-    logger.info(`Loading ${locale.name}`);
-    const page = await browser.newPage();
-
-    const pending = new Set(Object.keys(endpoints));
-    let done = false;
-
-    page.on('response', async (response) => {
-      const url = response.url();
-
-      const matched = [...pending].find((e) => url.includes(e));
-      if (!matched) return;
-
-      try {
-        const text = await response.text();
-        const res = JSON.parse(text) as SKPortWikiCatalog;
-
-        const type = endpoints[matched];
-
-        await saveJson(type, locale.id, res);
-        logger.success(`Saved [${locale.id}] (${type})`);
-
-        pending.delete(matched);
-
-        if (pending.size === 0 && !done) {
-          done = true;
-          await page.close();
+  const results: { locale: string; data: SKPortWikiCatalog }[] = [];
+  logger.info(`Fetching wiki catalogs for ${CONFIG.locales.length} languages`);
+  for (let index = 0; index < CONFIG.locales.length; index += 4) {
+    const batch = CONFIG.locales.slice(index, index + 4);
+    const fetched = await Promise.all(
+      batch.map(async (locale) => {
+        try {
+          return {
+            locale: locale.id,
+            data: await fetchCatalog(locale.region, session, cred, deviceId),
+          };
+        } catch (error) {
+          throw new Error(`Failed to fetch wiki catalog [${locale.id}]`, {
+            cause: error,
+          });
         }
-      } catch {}
-    });
-
-    await page.evaluateOnNewDocument((region) => {
-      localStorage.setItem(
-        'SK_THEME_INFO',
-        JSON.stringify({
-          region,
-          lang: 'en',
-          device: 'desktop',
-          color: 'dark',
-          nativeColor: 'dark',
-        })
-      );
-    }, locale.region);
-
-    await page.goto(pageUrl, { waitUntil: 'domcontentloaded' });
-
-    await new Promise((r) => setTimeout(r, 5000));
-    if (!page.isClosed()) await page.close();
+      })
+    );
+    results.push(...fetched);
+    logger.info(`Fetched ${results.length}/${CONFIG.locales.length} catalogs`);
   }
 
-  await browser.close();
+  await mkdir(outputDir, { recursive: true });
+  for (const { locale, data } of results) {
+    await writeFile(
+      path.join(outputDir, `${locale}.json`),
+      JSON.stringify(data)
+    );
+  }
+  logger.success(
+    `Saved ${results.length} wiki catalogs to raw/skport/wiki/catalog`
+  );
 }
 
 runScript('SKPort wiki catalog fetch', main);

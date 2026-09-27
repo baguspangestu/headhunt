@@ -57,7 +57,7 @@ export const saveAsPng = async ({
   try {
     await fs.access(outputPath);
   } catch {
-    await fs.writeFile(outputPath, buffer);
+    await fs.writeFile(outputPath, pngBuffer);
     logger.success(`Saved ${filename}`);
   }
 

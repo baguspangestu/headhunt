@@ -167,7 +167,9 @@ async function main() {
     const guide = await readJson<SKPortGuideGear>(
       path.join(paths.guide, `${locale.id}.json`)
     );
-    if (!guide) continue;
+    if (!guide) {
+      throw new Error(`Gear guide data is missing or invalid for ${locale.id}`);
+    }
 
     const options = (values: { id: string; name: string }[]) =>
       Object.values(

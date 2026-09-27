@@ -166,7 +166,9 @@ function transformWeapon({
     const extra = extraMap.get(id);
 
     const slug = extra?.slug ?? '';
-    const weaponDetail = detailMap.get('weapons')?.get(slug)?.get(file);
+    const detailsByLocale = detailMap.get('weapons')?.get(slug);
+    const weaponDetail =
+      detailsByLocale?.get(file) ?? detailsByLocale?.get(BASE_LANG);
 
     const data: Weapon = {
       id: id,
@@ -249,28 +251,54 @@ function getSKPortWikiTableCellContents({
     col: number;
   }[];
 }) {
-  const tabDataMap = document.widgetCommonMap[chapterId].tabDataMap;
-  const defaultContentId = tabDataMap.default.content;
-  const contentBlockMap = document.documentMap[defaultContentId].blockMap;
-  const targetTable = contentBlockMap[blockId]?.table;
+  const contentId =
+    document.widgetCommonMap[chapterId]?.tabDataMap?.default?.content;
+  const contentBlockMap = contentId
+    ? document.documentMap[contentId]?.blockMap
+    : undefined;
+  const targetTable = contentBlockMap?.[blockId]?.table;
 
-  if (!targetTable) return [];
+  if (!contentBlockMap || !targetTable) return [];
 
-  const cellContents = cellPositions
-    .map((pos) => {
-      const rowId = targetTable.rowIds[pos.row];
-      const colId = targetTable.columnIds[pos.col];
-      const cellIds = targetTable.cellMap[`${rowId}_${colId}`]?.childIds;
+  return cellPositions.flatMap(({ row, col }) => {
+    const rowId = targetTable.rowIds[row];
+    const colId = targetTable.columnIds[col];
+    if (!rowId || !colId) return [];
 
-      if (!cellIds?.length) return;
+    const cellIds = targetTable.cellMap[`${rowId}_${colId}`]?.childIds;
+    if (!cellIds?.length) return [];
 
-      return cellIds
-        .map((id) => contentBlockMap[id].text?.inlineElements)
-        .filter((v): v is InlineElement[] => Array.isArray(v));
-    })
-    .filter((v): v is InlineElement[][] => Array.isArray(v));
+    const blocks = cellIds
+      .map((id) =>
+        contentBlockMap[id]?.text?.inlineElements.filter(
+          (element): element is InlineElement =>
+            typeof element.text?.text === 'string'
+        )
+      )
+      .filter((elements): elements is InlineElement[] =>
+        Array.isArray(elements)
+      );
+    return [blocks];
+  });
+}
 
-  return cellContents;
+function findWidgetWithTable(
+  document: Document,
+  tableId: string
+): string | undefined {
+  for (const chapter of document.chapterGroup) {
+    for (const widget of chapter.widgets) {
+      const contentId =
+        document.widgetCommonMap[widget.id]?.tabDataMap?.default?.content;
+      if (
+        contentId &&
+        document.documentMap[contentId]?.blockMap?.[tableId]?.table
+      ) {
+        return widget.id;
+      }
+    }
+  }
+  return undefined;
 }
 
 async function getDetailMap() {
@@ -311,13 +339,8 @@ async function getDetailMap() {
         const document = json.data.item.document;
         const isRarity6 = json.data.item.tagIds.includes('10006');
 
-        const chapterInformationId = document.chapterGroup.find((f) =>
-          ['Informasi Senjata', 'Weapon Information'].includes(f.title.trim())
-        )?.widgets[0].id;
-
-        const chapterSkillId = document.chapterGroup.find((f) =>
-          ['Skill & Aktivasi', 'Skill & Activation'].includes(f.title.trim())
-        )?.widgets[0].id;
+        const chapterInformationId = findWidgetWithTable(document, 'siDaPc');
+        const chapterSkillId = findWidgetWithTable(document, '6kzKo0');
 
         // Informasi Senjata
         if (chapterInformationId) {

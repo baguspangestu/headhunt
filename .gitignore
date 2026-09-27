@@ -58,6 +58,7 @@ next-env.d.ts
 **/public/fallback-*.js
 
 # other
+/.data/
 /raw/skport/
 /raw/riset/
 
