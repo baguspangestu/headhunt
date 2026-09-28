@@ -349,7 +349,7 @@
       "backup": "Backup",
       "backupDescription": "Export semua profil dan riwayat gacha ke file backup JSON.",
       "includeImportUrls": "Sertakan URL import yang tersimpan",
-      "includeImportUrlsDescription": "Menambahkan URL import agar Sync tetap dapat digunakan setelah restore. Jika tidak disertakan, restore akan menghapus URL tersimpan pada profil yang dipulihkan.",
+      "includeImportUrlsDescription": "Menambahkan URL import agar Sync tetap dapat digunakan setelah restore.",
       "noImportUrlsDescription": "Tidak ada URL import tersimpan yang dapat disertakan.",
       "downloadBackup": "Unduh backup",
       "restore": "Restore",

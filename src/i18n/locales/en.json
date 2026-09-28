@@ -349,7 +349,7 @@
       "backup": "Backup",
       "backupDescription": "Export all profiles and gacha history to a JSON backup file.",
       "includeImportUrls": "Include saved import URLs",
-      "includeImportUrlsDescription": "Adds saved import URLs so Sync can still be used after restoring. Without them, restoring this backup clears saved URLs for its profiles.",
+      "includeImportUrlsDescription": "Adds saved import URLs so Sync can still be used after restoring.",
       "noImportUrlsDescription": "No saved import URL is available to include.",
       "downloadBackup": "Download backup",
       "restore": "Restore",
