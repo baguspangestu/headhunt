@@ -18,8 +18,8 @@
         "description": "Banner rerun karakter dan senjata kini tampil di tracker dengan riwayat dan statistik masing-masing."
       },
       "rerunPity": {
-        "title": "Progres Rerun Lebih Akurat",
-        "description": "Setiap hasil dihitung sebagai satu pull. Rerun karakter memiliki pity bersama, sedangkan pity rerun senjata mengikuti setiap edisi pool dan jaminan Rate-UP mengikuti poolId yang sama."
+        "title": "Pelacakan Progres RE-Faktor",
+        "description": "Setiap hasil draw dihitung satu pull, dan progres RE-Faktor dipisahkan dari jenis banner lain. Aturan penerusan pity dan jaminan masih sementara hingga banner rerun berikutnya dapat diperiksa."
       },
       "otherEvents": {
         "title": "Riwayat Lebih Lengkap",

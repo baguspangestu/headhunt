@@ -18,8 +18,8 @@
         "description": "Character and weapon rerun banners now appear in the tracker with their own history and statistics."
       },
       "rerunPity": {
-        "title": "Accurate Rerun Progress",
-        "description": "Each draw counts individually. Character reruns share their own pity, while weapon rerun pity follows each pool edition and Rate-UP guarantees follow the same pool ID."
+        "title": "RE-Factor Progress Tracking",
+        "description": "Each draw counts individually, and RE-Factor progress is tracked separately from other banner types. Carry-over rules for pity and guarantees remain provisional until future reruns can be checked."
       },
       "otherEvents": {
         "title": "More Complete History",
