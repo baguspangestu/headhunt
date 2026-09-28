@@ -161,22 +161,28 @@ const withoutImportUrls = (
     ])
   );
 
-export const calculateTrackerBackupHash = async (
+const serializeTrackerBackup = (
   backup: TrackerBackup,
   options: { includeImportUrls?: boolean } = {}
 ) => {
   const includeImportUrls =
     options.includeImportUrls ?? backup.includesImportUrls !== false;
-  const canonicalContent = JSON.stringify({
+  return JSON.stringify({
     version: backup.version,
     currentProfileId: backup.currentProfileId,
     profiles: includeImportUrls
       ? backup.profiles
       : withoutImportUrls(backup.profiles),
   });
+};
+
+export const calculateTrackerBackupHash = async (
+  backup: TrackerBackup,
+  options: { includeImportUrls?: boolean } = {}
+) => {
   const digest = await crypto.subtle.digest(
     'SHA-256',
-    new TextEncoder().encode(canonicalContent)
+    new TextEncoder().encode(serializeTrackerBackup(backup, options))
   );
 
   return Array.from(new Uint8Array(digest), (byte) =>
@@ -196,12 +202,10 @@ export const isTrackerBackupEqualToProfiles = async (
   );
   // Restore replaces the full profile, including its URL. A URL-free backup
   // must not be considered identical to a browser profile with a saved URL.
-  const [backupHash, localHash] = await Promise.all([
-    calculateTrackerBackupHash(backup, { includeImportUrls: true }),
-    calculateTrackerBackupHash(localBackup, { includeImportUrls: true }),
-  ]);
-
-  return backupHash === localHash;
+  return (
+    serializeTrackerBackup(backup, { includeImportUrls: true }) ===
+    serializeTrackerBackup(localBackup, { includeImportUrls: true })
+  );
 };
 
 export const parseTrackerBackup = (value: unknown): TrackerBackup => {

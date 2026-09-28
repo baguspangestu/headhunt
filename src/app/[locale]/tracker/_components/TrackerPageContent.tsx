@@ -253,7 +253,6 @@ export const TrackerPageContent = ({
             <Button
               onClick={handleOpenSettings}
               variant="secondary"
-              isNew
               disabled={!hasHydrated || isImporting}
               aria-label={t('SettingsMenu.openSettings')}
             >
@@ -264,7 +263,7 @@ export const TrackerPageContent = ({
         </PageTitle>
       </div>
 
-      <div className="grid w-full flex-1 gap-2 xl:grid-cols-[minmax(17rem,1fr)_minmax(0,2fr)]">
+      <div className="grid w-full flex-1 gap-x-2 gap-y-4 xl:grid-cols-[minmax(17rem,1fr)_minmax(0,2fr)]">
         <aside className="min-w-0 xl:sticky xl:top-20 xl:h-fit">
           <div className="overflow-hidden rounded-xl xl:bg-neutral-900/35">
             <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 xl:flex xl:max-h-[calc(100dvh-9.5rem)] xl:flex-col xl:overflow-y-auto xl:overscroll-contain xl:pr-1.5">
@@ -303,6 +302,14 @@ export const TrackerPageContent = ({
                       hash={type.id}
                       name={type.name}
                       icons={type.icons}
+                      rarityCounts={
+                        type.id === 'weponbox'
+                          ? {
+                              r5: typeStats?.r5Count ?? 0,
+                              r6: typeStats?.r6Count ?? 0,
+                            }
+                          : undefined
+                      }
                       pity5={pity5}
                       pity6={pity6}
                       pity5Limit={type.r5PityLimit}
