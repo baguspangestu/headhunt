@@ -448,6 +448,7 @@
         "runBookmarkDesc": "While still on the official Record Book, open the import bookmark. Once it reports success, return here and paste the copied URL below. Your server is detected automatically during import."
       },
       "WindowsSteps": {
+        "videoGuide": "Windows import video guide",
         "openHeadHuntingTitle": "Open Headhunting Details",
         "openHeadHuntingDesc": "Launch <game>Arknights: Endfield</game>, then open <menu>Headhunting Details</menu> so its history URL can be detected.",
         "openPowerShellTitle": "Open Windows PowerShell",
