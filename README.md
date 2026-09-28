@@ -45,13 +45,13 @@ The command runs the guide, wiki catalog, wiki detail, and game pool collectors 
 Common commands:
 
 ```bash
-npm run generate:content
-npm run generate:gear
-npm run generate:banner
-npm run get:pool
 npm run get:guide
 npm run get:wiki-catalog
 npm run get:wiki-detail
+npm run get:pool
+npm run generate:content
+npm run generate:gear
+npm run generate:banner
 ```
 
 `get:guide` fetches SKPort guide JSON directly from the signed API. On the first
