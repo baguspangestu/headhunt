@@ -11,6 +11,33 @@
   "ChangelogPage": {
     "title": "Changelog",
     "description": "See the latest features, improvements, and fixes on Headhunt.cc.",
+    "trackerV3ReleaseTitle": "Tracker V3 and RE-Factor Headhunting",
+    "trackerV3Changes": {
+      "refactorBanners": {
+        "title": "RE-Factor Banners",
+        "description": "Character and weapon rerun banners now appear in the tracker with their own history and statistics."
+      },
+      "rerunPity": {
+        "title": "Accurate Rerun Progress",
+        "description": "Each draw counts individually. Character reruns share their own pity, while weapon rerun pity follows each pool edition and Rate-UP guarantees follow the same pool ID."
+      },
+      "otherEvents": {
+        "title": "More Complete History",
+        "description": "Non-draw events from the game are preserved for future use without affecting pity or draw statistics."
+      },
+      "legacyMigration": {
+        "title": "Automatic V2 Migration",
+        "description": "Existing history is kept, and weapon rerun draws previously grouped with regular weapon banners move to the correct category."
+      },
+      "backupV3": {
+        "title": "V3 Backup and Restore",
+        "description": "Backups now include rerun editions and non-draw events. Restoring a backup without an import URL also clears the previously saved URL."
+      },
+      "reliableImport": {
+        "title": "More Reliable Imports",
+        "description": "V3 imports handle pagination across mixed weapon pools, avoid duplicate results, and retain older backup history when the game returns only recent records."
+      }
+    },
     "currentReleaseTitle": "More Practical Imports, Backups, and Profiles",
     "currentChanges": {
       "importPrivacy": {

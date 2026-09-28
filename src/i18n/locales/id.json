@@ -11,6 +11,33 @@
   "ChangelogPage": {
     "title": "Log Perubahan",
     "description": "Lihat fitur baru, peningkatan, dan perbaikan terbaru di Headhunt.cc.",
+    "trackerV3ReleaseTitle": "Tracker V3 dan Headhunt RE-Faktor",
+    "trackerV3Changes": {
+      "refactorBanners": {
+        "title": "Banner RE-Faktor",
+        "description": "Banner rerun karakter dan senjata kini tampil di tracker dengan riwayat dan statistik masing-masing."
+      },
+      "rerunPity": {
+        "title": "Progres Rerun Lebih Akurat",
+        "description": "Setiap hasil dihitung sebagai satu pull. Rerun karakter memiliki pity bersama, sedangkan pity rerun senjata mengikuti setiap edisi pool dan jaminan Rate-UP mengikuti poolId yang sama."
+      },
+      "otherEvents": {
+        "title": "Riwayat Lebih Lengkap",
+        "description": "Event selain draw dari game tetap disimpan untuk kebutuhan mendatang tanpa memengaruhi pity atau statistik pull."
+      },
+      "legacyMigration": {
+        "title": "Migrasi V2 Otomatis",
+        "description": "Riwayat lama tetap tersimpan, dan hasil rerun senjata yang sebelumnya tergabung dengan banner senjata reguler dipindahkan ke kategori yang tepat."
+      },
+      "backupV3": {
+        "title": "Backup dan Restore V3",
+        "description": "Backup kini mencakup edisi rerun dan event selain draw. Restore dari backup tanpa URL import juga menghapus URL lama yang tersimpan."
+      },
+      "reliableImport": {
+        "title": "Import Lebih Andal",
+        "description": "Import v3 menangani pagination pada pool senjata campuran, mencegah hasil duplikat, dan mempertahankan riwayat lama dari backup saat game hanya menyediakan data terbaru."
+      }
+    },
     "currentReleaseTitle": "Import, Backup, dan Profil yang Lebih Praktis",
     "currentChanges": {
       "importPrivacy": {
