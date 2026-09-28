@@ -62,7 +62,7 @@
     "@types/node": "^26.6.2",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
-    "eslint": "^10.11.0",
+    "eslint": "^9.39.5",
     "eslint-config-next": "^16.3.6",
     "eslint-config-prettier": "^10.1.8",
     "prettier": "^3.9.9",
@@ -71,7 +71,7 @@
     "sharp": "^0.35.4",
     "tailwindcss": "^4",
     "tsx": "^4.23.15",
-    "typescript": "^7.0.2",
+    "typescript": "^5.9.3",
     "wrangler": "^4.139.0"
   }
 }
