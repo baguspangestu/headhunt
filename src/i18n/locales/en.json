@@ -11,6 +11,33 @@
   "ChangelogPage": {
     "title": "Changelog",
     "description": "See the latest features, improvements, and fixes on Headhunt.cc.",
+    "trackerV3ReleaseTitle": "Tracker V3 and RE-Factor Headhunting",
+    "trackerV3Changes": {
+      "refactorBanners": {
+        "title": "RE-Factor Banners",
+        "description": "Character and weapon rerun banners now appear in the tracker with their own history and statistics."
+      },
+      "rerunPity": {
+        "title": "RE-Factor Progress Tracking",
+        "description": "Each draw counts individually, and RE-Factor progress is tracked separately from other banner types. Carry-over rules for pity and guarantees remain provisional until future reruns can be checked."
+      },
+      "otherEvents": {
+        "title": "More Complete History",
+        "description": "Non-draw events from the game are preserved for future use without affecting pity or draw statistics."
+      },
+      "legacyMigration": {
+        "title": "Automatic V2 Migration",
+        "description": "Existing history is kept, and weapon rerun draws previously grouped with regular weapon banners move to the correct category."
+      },
+      "backupV3": {
+        "title": "V3 Backup and Restore",
+        "description": "Backups now include rerun editions and non-draw events. Restoring a backup without an import URL also clears the previously saved URL."
+      },
+      "reliableImport": {
+        "title": "More Reliable Imports",
+        "description": "V3 imports handle pagination across mixed weapon pools, avoid duplicate results, and retain older backup history when the game returns only recent records."
+      }
+    },
     "currentReleaseTitle": "More Practical Imports, Backups, and Profiles",
     "currentChanges": {
       "importPrivacy": {
@@ -198,7 +225,6 @@
     "title": "Headhunt Tracker - Arknights: Endfield",
     "description": "Track your Arknights: Endfield pity and gacha history with Headhunt.cc.",
     "pageTitle": "Headhunt Tracker",
-    "refactorAnnouncement": "The Re-Factor banner will be added soon. We are adjusting the pity calculation to match the new banner rules. Thank you for your patience.",
     "recentBanners": "Recent Banners",
     "recentHeadhunts": "Recent Headhunts",
     "recentIssues": "Recent Issues",
@@ -213,13 +239,16 @@
     "loading": "Loading...",
     "noGachaRecords": "No Gacha records.",
     "noRecordImported": "No Records imported.",
+    "rerun_chrName": "RE-Factor Headhunting",
+    "rerun_wpnName": "RE-Factor Issue",
     "specialName": "Chartered Headhunting",
     "weponboxName": "All Arsenal Issues",
     "jointName": "Special Headhunting",
     "standardName": "Basic Headhunting",
     "beginnerName": "New Horizons Headhunting",
-    "importInstruction": "Import up to 90 days of gacha history into your browser. To update later with the <bold>Sync</bold> button, select <bold>Save import URL for Sync</bold> during import. If you do not save it, generate a new URL and import it into the same profile whenever you want to update your history.",
-    "reimportInstruction": "To update your history, simply use the <bold>Sync</bold> button. If your import URL has expired, generate a new URL and import it again into the same profile.",
+    "importInstruction": "Import your gacha history to see your pity and headhunt stats. To update later with the <bold>Sync</bold> button, select <bold>Save import URL for Sync</bold> during import. If you do not save it, use a new URL and import it into the same profile whenever you want to update your history.",
+    "importHistoryLimit": "Only gacha history from the last 90 days can be retrieved from the game. Previously imported history remains saved.",
+    "reimportInstruction": "To update your history, simply use the <bold>Sync</bold> button. If your import URL has expired, use a new URL and import it again into the same profile.",
     "reimportWithoutSavedUrlInstruction": "This profile does not have a saved import URL. To update its history, generate a new URL and import it into this same profile. Select <bold>Save import URL for Sync</bold> if you want to use the Sync button next time.",
     "import": "Import",
     "importing": "Importing...",
@@ -320,7 +349,7 @@
       "backup": "Backup",
       "backupDescription": "Export all profiles and gacha history to a JSON backup file.",
       "includeImportUrls": "Include saved import URLs",
-      "includeImportUrlsDescription": "Adds saved import URLs to this export so Sync can still be used after restoring it.",
+      "includeImportUrlsDescription": "Adds saved import URLs so Sync can still be used after restoring. Without them, restoring this backup clears saved URLs for its profiles.",
       "noImportUrlsDescription": "No saved import URL is available to include.",
       "downloadBackup": "Download backup",
       "restore": "Restore",
@@ -475,7 +504,7 @@
       "url": "Save your gacha import URL only when you select the save option during import",
       "history": "Save your gacha history and pity tracking data",
       "details": "Your history and any import URL you choose to save remain in the browser on your device. Import URLs are not saved by default. You can delete local data at any time by clearing your browser data.",
-      "export": "Local backup files do not include import URLs by default. A saved import URL is included only when you specifically select that option before downloading the backup. Restoring a file without URLs does not overwrite URLs already stored in the browser."
+      "export": "Local backup files do not include import URLs by default. A saved import URL is included only when you specifically select that option before downloading the backup. Restoring a file without URLs clears saved import URLs for the restored profiles."
     },
     "token": {
       "title": "4. Token Usage",

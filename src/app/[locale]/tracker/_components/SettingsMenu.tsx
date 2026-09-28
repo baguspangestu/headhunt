@@ -7,7 +7,6 @@ import { Tooltip } from '@/components/ui/Tooltip';
 import {
   calculateTrackerBackupHash,
   createTrackerBackup,
-  getTrackerBackupProfilesForRestore,
   isTrackerBackupEqualToProfiles,
   parseTrackerBackup,
   type TrackerBackup,
@@ -548,10 +547,7 @@ export const SettingsMenu = ({ isOpen, onClose }: SettingsMenuProps) => {
         lastSyncedDataRef.current = null;
         setLastBackupSignature('');
         if (driveSession) setDriveStatus('driveOutdated');
-        restoreProfiles(
-          getTrackerBackupProfilesForRestore(backup, profiles),
-          backup.currentProfileId
-        );
+        restoreProfiles(backup.profiles, backup.currentProfileId);
         setPendingBackup(null);
         setPendingBackupDetails(null);
         notify(t('restored'));
@@ -606,10 +602,7 @@ export const SettingsMenu = ({ isOpen, onClose }: SettingsMenuProps) => {
     if (!pendingBackup) return;
 
     const isGoogleDriveRestore = pendingBackupDetails?.source === 'googleDrive';
-    const restoredProfiles = getTrackerBackupProfilesForRestore(
-      pendingBackup,
-      profiles
-    );
+    const restoredProfiles = pendingBackup.profiles;
     const restoredDataSignature = JSON.stringify({
       currentProfileId: pendingBackup.currentProfileId,
       profiles: restoredProfiles,

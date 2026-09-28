@@ -4,7 +4,10 @@ import LZString from 'lz-string';
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 import { TRACKER_CONFIG } from '@/config/tracker';
-import { migrateProfilesToV2 } from '@/lib/tracker-migration';
+import {
+  migrateProfilesToV2,
+  migrateProfilesToV3,
+} from '@/lib/tracker-migration';
 import type { Profile } from '@/types/profile';
 
 type StorageState = {
@@ -157,20 +160,21 @@ export const useStorageStore = create<StorageState>()(
     }),
     {
       name: 'storage',
-      version: 2,
+      version: 3,
       storage: createJSONStorage(() => storage),
 
       migrate: (persistedState, version) => {
-        // This migration and its notice apply only to the v1 -> v2 upgrade.
-        if (version !== 1 || !persistedState) return persistedState;
+        if (version >= 3 || !persistedState) return persistedState;
 
         const state = persistedState as Partial<StorageState>;
         if (!state.profiles) return persistedState;
 
         return {
           ...state,
-          profiles: migrateProfilesToV2(state.profiles),
-          migrationNotice: true,
+          profiles: migrateProfilesToV3(
+            version === 1 ? migrateProfilesToV2(state.profiles) : state.profiles
+          ),
+          migrationNotice: version === 1,
         } as StorageState;
       },
 

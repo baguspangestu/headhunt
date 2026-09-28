@@ -20,6 +20,20 @@ import {
 
 const releases = [
   {
+    id: '2026.09.28',
+    date: '2026-09-28T00:00:00+07:00',
+    titleKey: 'trackerV3ReleaseTitle',
+    changesKey: 'trackerV3Changes',
+    changes: [
+      { key: 'refactorBanners', icon: FaList },
+      { key: 'rerunPity', icon: FaChartSimple },
+      { key: 'otherEvents', icon: FaFileArrowDown },
+      { key: 'legacyMigration', icon: FaArrowRightArrowLeft },
+      { key: 'backupV3', icon: FaShieldHalved },
+      { key: 'reliableImport', icon: FaRotate },
+    ],
+  },
+  {
     id: '2026.09.20',
     date: '2026-09-20T00:00:00+07:00',
     titleKey: 'currentReleaseTitle',

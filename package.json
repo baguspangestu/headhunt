@@ -40,8 +40,9 @@
     "get:wiki-catalog:puppeteer": "tsx scripts/archive/get-skport-wiki-catalog.puppeteer.ts",
     "get:wiki-detail": "tsx scripts/get-skport-wiki-detail.ts",
     "get:wiki-detail:puppeteer": "tsx scripts/archive/get-skport-wiki-detail.puppeteer.ts",
-    "test": "npm run test:audit",
-    "test:audit": "tsx tests/audit-regressions.test.ts"
+    "test": "npm run test:audit && npm run test:tracker-v3",
+    "test:audit": "tsx tests/audit-regressions.test.ts",
+    "test:tracker-v3": "tsx tests/tracker-v3.test.ts"
   },
   "dependencies": {
     "@next/third-parties": "^16.3.5",

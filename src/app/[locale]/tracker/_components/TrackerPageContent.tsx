@@ -20,6 +20,7 @@ import { DetailRecords } from './DetailRecords';
 import type { Catalogs } from '@/types/catalog';
 import type { Enums } from '@/types/enums';
 import type { RecordItem } from '@/types/profile';
+import { HeadhuntTypeId } from '@/data/tracker/headhunt-types';
 import { SettingsMenu } from './SettingsMenu';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
@@ -105,6 +106,19 @@ export const TrackerPageContent = ({
     ];
   }, [types.operatorTypes, types.weaponTypes]);
 
+  const rerunWeaponBannerId = useMemo(() => {
+    const now = Date.now() / 1000;
+    const rerunBanners = Object.values(banners)
+      .filter((banner) => banner.id.startsWith(`${HeadhuntTypeId.RerunWpn}_`))
+      .sort((a, b) => (b.startTime ?? 0) - (a.startTime ?? 0));
+    return (
+      rerunBanners.find(
+        (banner) =>
+          (banner.startTime ?? 0) <= now && (banner.endTime ?? Infinity) >= now
+      )?.id ?? rerunBanners[0]?.id
+    );
+  }, [banners]);
+
   const hashList = useMemo(
     () => combinedHeadhuntTypes.map((e) => e.id),
     [combinedHeadhuntTypes]
@@ -125,9 +139,13 @@ export const TrackerPageContent = ({
     const allRecords = profile?.stores?.headhunt?.records;
     const bannerIds = new Set<string>();
 
-    const isMainType = types.operatorTypes
-      .slice(0, 3)
-      .some((type) => type.id === hash);
+    const isMainType = new Set([
+      'rerun_chr',
+      'rerun_wpn',
+      'special',
+      'weponbox',
+      'joint',
+    ]).has(hash);
 
     let result: RecordItem[] = [];
 
@@ -135,13 +153,11 @@ export const TrackerPageContent = ({
       const source = allRecords?.[hash] ?? [];
 
       if (isMainType) {
-        for (const r of source) {
-          bannerIds.add(r.bannerId);
-        }
+        for (const record of source) bannerIds.add(record.bannerId);
       }
 
       result = selectedBannerId
-        ? source.filter((r) => r.bannerId === selectedBannerId)
+        ? source.filter((record) => record.bannerId === selectedBannerId)
         : source;
     } else {
       const baseKey = hash.split('_')[0];
@@ -154,7 +170,6 @@ export const TrackerPageContent = ({
   }, [
     hasHydrated,
     profile?.stores?.headhunt?.records,
-    types.operatorTypes,
     isBannerType,
     hash,
     selectedBannerId,
@@ -253,17 +268,22 @@ export const TrackerPageContent = ({
         <aside className="min-w-0 xl:sticky xl:top-20 xl:h-fit">
           <div className="overflow-hidden rounded-xl xl:bg-neutral-900/35">
             <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 xl:flex xl:max-h-[calc(100dvh-9.5rem)] xl:flex-col xl:overflow-y-auto xl:overscroll-contain xl:pr-1.5">
-              <p className="rounded-xl border border-amber-400/20 bg-amber-400/10 px-4 py-3 text-xs leading-relaxed text-amber-100/90 sm:col-span-2">
-                {t('refactorAnnouncement')}
-              </p>
               {sidebarTypes.map((type) => {
                 const isWeaponBanner = type.id.startsWith('weponbox_');
+                const pityBannerId =
+                  type.id === HeadhuntTypeId.RerunWpn
+                    ? hash === HeadhuntTypeId.RerunWpn &&
+                      selectedBannerId?.startsWith(
+                        `${HeadhuntTypeId.RerunWpn}_`
+                      )
+                      ? selectedBannerId
+                      : rerunWeaponBannerId
+                    : type.id;
                 const typeStats = hasHydrated
-                  ? isWeaponBanner
-                    ? profile?.stores?.headhunt?.banners[type.id]
+                  ? isWeaponBanner || type.id === HeadhuntTypeId.RerunWpn
+                    ? profile?.stores?.headhunt?.banners[pityBannerId ?? '']
                     : profile?.stores?.headhunt?.types[type.id]
                   : undefined;
-
                 let pity5 = typeStats?.r5Pity ?? 0;
                 let pity6 = typeStats?.r6Pity ?? 0;
 
@@ -313,7 +333,7 @@ export const TrackerPageContent = ({
               )}
               {selectedBannerId ? (
                 <DetailRecords
-                  label={banners[selectedBannerId].name ?? selectedBannerId}
+                  label={banners[selectedBannerId]?.name ?? selectedBannerId}
                   stats={profile.stores.headhunt.banners[selectedBannerId]}
                   hash={hash}
                 />
@@ -370,15 +390,20 @@ export const TrackerPageContent = ({
                     : t('noRecordImported')}
                 </h2>
                 {!profile?.stores?.headhunt && (
-                  <p className="mt-2 text-sm leading-6 text-neutral-400 sm:text-base">
-                    {t.rich('importInstruction', {
-                      bold: (chunks) => (
-                        <span className="font-semibold text-neutral-200">
-                          {chunks}
-                        </span>
-                      ),
-                    })}
-                  </p>
+                  <>
+                    <p className="mt-2 text-sm leading-6 text-neutral-400 sm:text-base">
+                      {t.rich('importInstruction', {
+                        bold: (chunks) => (
+                          <span className="font-semibold text-neutral-200">
+                            {chunks}
+                          </span>
+                        ),
+                      })}
+                    </p>
+                    <p className="mt-2 text-xs leading-5 text-neutral-500">
+                      {t('importHistoryLimit')}
+                    </p>
+                  </>
                 )}
               </div>
 

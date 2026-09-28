@@ -23,10 +23,10 @@ export const RecentBanners = ({
   const [visible, setVisible] = useState(PAGE_SIZE);
 
   const bannerIdsArray = useMemo(() => [...bannerIds], [bannerIds]);
-
-  const fBannerIds = useMemo(() => {
-    return bannerIdsArray.slice(0, visible);
-  }, [bannerIdsArray, visible]);
+  const visibleBannerIds = useMemo(
+    () => bannerIdsArray.slice(0, visible),
+    [bannerIdsArray, visible]
+  );
 
   const hasMore = visible < bannerIdsArray.length;
 
@@ -62,7 +62,7 @@ export const RecentBanners = ({
         >
           <span className="line-clamp-1 text-xs font-semibold">{t('all')}</span>
         </button>
-        {fBannerIds.map((bannerId) => {
+        {visibleBannerIds.map((bannerId) => {
           const banner = banners[bannerId];
 
           const isSelected = bannerId === selectedId;
@@ -72,13 +72,10 @@ export const RecentBanners = ({
             <button
               type="button"
               key={bannerId}
-              onClick={
-                banner
-                  ? () => (isSelected ? onSelected(null) : onSelected(bannerId))
-                  : undefined
-              }
+              onClick={() => onSelected(isSelected ? null : bannerId)}
               aria-pressed={isSelected}
-              className={`${colorClass} relative h-full w-full overflow-hidden rounded-md ${banner ? 'cursor-pointer' : 'select-none'}`}
+              aria-label={banner?.name ?? bannerId}
+              className={`${colorClass} relative h-full w-full cursor-pointer overflow-hidden rounded-md`}
             >
               {banner ? (
                 <CloudflareImage

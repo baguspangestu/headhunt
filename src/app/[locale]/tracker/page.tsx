@@ -69,6 +69,14 @@ export default async function TrackerPage() {
     });
 
   const operatorTypes = headhuntTypes.map((type) => {
+    const nameKey = `${type.id}Name` as Parameters<typeof t>[0];
+    const typeName = t.has(nameKey)
+      ? t(nameKey)
+      : type.id === HeadhuntTypeId.RerunChr
+        ? 'RE-Factor Headhunting'
+        : type.id === HeadhuntTypeId.RerunWpn
+          ? 'RE-Factor Issue'
+          : type.id;
     const banner =
       activeBanners.find((banner) => banner.id.startsWith(type.id)) ??
       sortedBanners.find((banner) => banner.id.startsWith(type.id));
@@ -82,7 +90,7 @@ export default async function TrackerPage() {
         ]
       : [
           {
-            name: t(`${type.id}Name`),
+            name: typeName,
             url: type.icon,
           },
         ];
@@ -110,14 +118,17 @@ export default async function TrackerPage() {
       type.id === HeadhuntTypeId.Special ||
       type.id === HeadhuntTypeId.Joint
     ) {
-      icons = banner?.rotate?.map((id) => {
+      icons = (type.id === HeadhuntTypeId.Joint
+        ? banner?.featured
+        : banner?.rotate
+      )?.map((id) => {
         return {
           name: catalogs[id]?.name ?? id,
           url: catalogs[id]?.icon ?? '',
         };
       }) ?? [
         {
-          name: t(`${type.id}Name`),
+          name: typeName,
           url: type.icon,
         },
       ];
@@ -125,7 +136,7 @@ export default async function TrackerPage() {
 
     return {
       id: type.id,
-      name: t(`${type.id}Name`),
+      name: typeName,
       icons,
       r5PityLimit: type.r5PityLimit,
       r6PityLimit: type.r6PityLimit,

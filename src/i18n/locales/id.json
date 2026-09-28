@@ -11,6 +11,33 @@
   "ChangelogPage": {
     "title": "Log Perubahan",
     "description": "Lihat fitur baru, peningkatan, dan perbaikan terbaru di Headhunt.cc.",
+    "trackerV3ReleaseTitle": "Tracker V3 dan Headhunt RE-Faktor",
+    "trackerV3Changes": {
+      "refactorBanners": {
+        "title": "Banner RE-Faktor",
+        "description": "Banner rerun karakter dan senjata kini tampil di tracker dengan riwayat dan statistik masing-masing."
+      },
+      "rerunPity": {
+        "title": "Pelacakan Progres RE-Faktor",
+        "description": "Setiap hasil draw dihitung satu pull, dan progres RE-Faktor dipisahkan dari jenis banner lain. Aturan penerusan pity dan jaminan masih sementara hingga banner rerun berikutnya dapat diperiksa."
+      },
+      "otherEvents": {
+        "title": "Riwayat Lebih Lengkap",
+        "description": "Event selain draw dari game tetap disimpan untuk kebutuhan mendatang tanpa memengaruhi pity atau statistik pull."
+      },
+      "legacyMigration": {
+        "title": "Migrasi V2 Otomatis",
+        "description": "Riwayat lama tetap tersimpan, dan hasil rerun senjata yang sebelumnya tergabung dengan banner senjata reguler dipindahkan ke kategori yang tepat."
+      },
+      "backupV3": {
+        "title": "Backup dan Restore V3",
+        "description": "Backup kini mencakup edisi rerun dan event selain draw. Restore dari backup tanpa URL import juga menghapus URL lama yang tersimpan."
+      },
+      "reliableImport": {
+        "title": "Import Lebih Andal",
+        "description": "Import v3 menangani pagination pada pool senjata campuran, mencegah hasil duplikat, dan mempertahankan riwayat lama dari backup saat game hanya menyediakan data terbaru."
+      }
+    },
     "currentReleaseTitle": "Import, Backup, dan Profil yang Lebih Praktis",
     "currentChanges": {
       "importPrivacy": {
@@ -198,7 +225,6 @@
     "title": "Headhunt Tracker - Arknights: Endfield",
     "description": "Lacak pity dan riwayat gacha Arknights: Endfield dengan mudah menggunakan Headhunt.cc.",
     "pageTitle": "Headhunt Tracker",
-    "refactorAnnouncement": "Banner Re-Factor akan segera ditambahkan. Kami sedang menyesuaikan perhitungan pity sesuai aturan banner baru tersebut. Mohon bersabar.",
     "recentBanners": "Banner Terbaru",
     "recentHeadhunts": "Headhunt Terbaru",
     "recentIssues": "Edisi Terbaru",
@@ -213,13 +239,16 @@
     "loading": "Memuat...",
     "noGachaRecords": "Belum ada riwayat gacha.",
     "noRecordImported": "Riwayat Gacha belum di-import.",
+    "rerun_chrName": "Headhunt RE-Faktor",
+    "rerun_wpnName": "Edisi RE-Faktor",
     "specialName": "Headhunt Khusus",
     "weponboxName": "Semua Edisi Senjata",
     "jointName": "Headhunt Spesial",
     "standardName": "Headhunt Dasar",
     "beginnerName": "Headhunt Cakrawala Baru",
-    "importInstruction": "Import riwayat gacha hingga 90 hari terakhir ke browser-mu. Agar pembaruan berikutnya dapat menggunakan tombol <bold>Sync</bold>, centang <bold>Simpan URL import untuk Sync</bold> saat import. Jika URL tidak disimpan, buat URL baru lalu import ke profil yang sama setiap kali ingin memperbarui riwayat.",
-    "reimportInstruction": "Untuk memperbarui riwayat, cukup gunakan tombol <bold>Sync</bold>. Jika URL import sudah kedaluwarsa, buat URL baru lalu import kembali ke profil yang sama.",
+    "importInstruction": "Import riwayat gacha untuk melihat pity dan statistik headhunt-mu. Agar pembaruan berikutnya dapat menggunakan tombol <bold>Sync</bold>, centang <bold>Simpan URL import untuk Sync</bold> saat import. Jika URL tidak disimpan, gunakan URL baru lalu import ke profil yang sama setiap kali ingin memperbarui riwayat.",
+    "importHistoryLimit": "Hanya riwayat gacha 90 hari terakhir yang dapat diambil dari game. Riwayat yang sudah diimpor tetap tersimpan.",
+    "reimportInstruction": "Untuk memperbarui riwayat, cukup gunakan tombol <bold>Sync</bold>. Jika URL import sudah kedaluwarsa, gunakan URL baru lalu import kembali ke profil yang sama.",
     "reimportWithoutSavedUrlInstruction": "Profil ini tidak memiliki URL import tersimpan. Untuk memperbarui riwayat, buat URL baru lalu import ke profil yang sama. Centang <bold>Simpan URL import untuk Sync</bold> jika kamu ingin menggunakan tombol Sync pada pembaruan berikutnya.",
     "import": "Import",
     "importing": "Mengimpor...",
@@ -320,7 +349,7 @@
       "backup": "Backup",
       "backupDescription": "Export semua profil dan riwayat gacha ke file backup JSON.",
       "includeImportUrls": "Sertakan URL import yang tersimpan",
-      "includeImportUrlsDescription": "Menambahkan URL import yang tersimpan ke export ini agar Sync tetap dapat digunakan setelah restore.",
+      "includeImportUrlsDescription": "Menambahkan URL import agar Sync tetap dapat digunakan setelah restore. Jika tidak disertakan, restore akan menghapus URL tersimpan pada profil yang dipulihkan.",
       "noImportUrlsDescription": "Tidak ada URL import tersimpan yang dapat disertakan.",
       "downloadBackup": "Unduh backup",
       "restore": "Restore",
@@ -475,7 +504,7 @@
       "url": "Menyimpan URL import gacha hanya jika kamu memilih opsi penyimpanan saat melakukan import",
       "history": "Menyimpan riwayat gacha dan data pelacakan pity kamu",
       "details": "Riwayat dan URL import yang kamu pilih untuk disimpan tetap berada di browser pada perangkat kamu. URL import tidak disimpan secara default. Data lokal dapat dihapus kapan saja dengan menghapus data browser.",
-      "export": "File backup lokal tidak menyertakan URL import secara default. URL import yang tersimpan hanya disertakan jika kamu secara khusus memilih opsi tersebut sebelum mengunduh backup. Saat file tanpa URL dipulihkan, URL yang sudah ada di browser tidak ditimpa."
+      "export": "File backup lokal tidak menyertakan URL import secara default. URL import yang tersimpan hanya disertakan jika kamu secara khusus memilih opsi tersebut sebelum mengunduh backup. Memulihkan file tanpa URL akan menghapus URL import tersimpan pada profil yang dipulihkan."
     },
     "token": {
       "title": "4. Penggunaan Token",

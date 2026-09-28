@@ -20,7 +20,8 @@ export const DetailRecords = ({
   const locale = useLocale();
 
   const details = useMemo(() => {
-    const isWeapon = hash.startsWith('weponbox');
+    const isWeapon = hash.startsWith('weponbox') || hash === 'rerun_wpn';
+    const isRerunCharacter = hash === 'rerun_chr';
 
     const localeValue =
       CONFIG.locales.find((l) => l.id === locale)?.value ?? 'en-US';
@@ -32,7 +33,7 @@ export const DetailRecords = ({
     const totalPulls = r4 + r5 + r6;
     const hasR6 = r6 > 0;
     const hasFreePulls = (stats?.freeCount ?? 0) > 0;
-    const hasGuaranteed = hash === 'special' || isWeapon;
+    const hasGuaranteed = hash === 'special' || isWeapon || isRerunCharacter;
 
     const averagePityDescription = hasGuaranteed
       ? hasFreePulls
@@ -105,7 +106,7 @@ export const DetailRecords = ({
     }
 
     const extra = [
-      ...(!isWeapon
+      ...(!isWeapon && !isRerunCharacter
         ? [
             {
               label: t('rotateWinRate'),

@@ -1,4 +1,4 @@
-import type { ImportRecordItem } from './import';
+import type { ImportEventItem, ImportRecordItem } from './import';
 
 export type Profile = {
   id: string;
@@ -15,7 +15,11 @@ export type Headhunt = {
   types: Partial<Record<string, TypeItem>>;
   banners: Partial<Record<string, BannerItem>>;
   records: Partial<Record<string, RecordItem[]>>;
+  events?: Partial<Record<string, EventItem[]>>;
+  eventsBackfillPending?: boolean;
 };
+
+export type EventItem = ImportEventItem & { typeId: string };
 
 export type TypeItem = {
   id: string;
