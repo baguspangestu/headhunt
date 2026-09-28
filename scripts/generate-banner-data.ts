@@ -197,6 +197,7 @@ async function main() {
       const isOperator = data.pool_gacha_type === 'char';
 
       let rotate: string[] = [];
+      let featured: string[] = [];
 
       if (isOperator) {
         const pool = (json as GamePoolOperator).data.pool;
@@ -206,7 +207,7 @@ async function main() {
             .filter((id): id is string => Boolean(id));
         }
         if (pool.pool_type === 'extra') {
-          rotate = pool.all.filter((e) => e.rarity === 6).map((e) => e.id);
+          featured = pool.all.filter((e) => e.rarity === 6).map((e) => e.id);
         }
       }
 
@@ -218,6 +219,7 @@ async function main() {
         image: assetsMap.get(result.poolId) || '',
         rateup: data.all.find((e) => e.name === data.up6_name)!.id,
         ...(rotate.length ? { rotate } : {}),
+        ...(featured.length ? { featured } : {}),
         ...(pool && 'startAt' in pool
           ? { startTime: getTimestampSecond(pool.startAt) }
           : {}),

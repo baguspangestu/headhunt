@@ -149,6 +149,100 @@ async function main() {
     processed
   );
 
+  const rotatedItem = 'chr_0035_liino';
+  const noRotateImport = processImportedHeadhunt(
+    undefined,
+    new Map([
+      [
+        'rerun_chr',
+        [
+          {
+            id: 1,
+            bannerId: 'rerun_chr_yvonne',
+            itemId: rotatedItem,
+            rarity: 6,
+            isFree: false,
+            isNew: false,
+            timestamp: 1,
+          },
+        ],
+      ],
+      [
+        'special',
+        [
+          {
+            id: 2,
+            bannerId: 'special_1_5_1',
+            itemId: rotatedItem,
+            rarity: 6,
+            isFree: false,
+            isNew: false,
+            timestamp: 2,
+          },
+        ],
+      ],
+      [
+        'joint',
+        [
+          {
+            id: 3,
+            bannerId: 'joint_1_2_2',
+            itemId: rotatedItem,
+            rarity: 6,
+            isFree: false,
+            isNew: false,
+            timestamp: 3,
+          },
+        ],
+      ],
+    ]),
+    new Map(),
+    {
+      rerun_chr_yvonne: {
+        id: 'rerun_chr_yvonne',
+        rateup: 'chr_0017_yvonne',
+        rotate: [rotatedItem],
+      },
+      special_1_5_1: {
+        id: 'special_1_5_1',
+        rateup: 'chr_0034_typhoea',
+        rotate: [rotatedItem],
+      },
+      joint_1_2_2: {
+        id: 'joint_1_2_2',
+        rateup: 'chr_0016_laevat',
+        rotate: [rotatedItem],
+      },
+    },
+    ''
+  );
+  assert.equal(noRotateImport.records.rerun_chr?.[0]?.result, GachaResult.Lose);
+  assert.equal(noRotateImport.types.rerun_chr?.rotateWin, 0);
+  assert.equal(noRotateImport.records.special?.[0]?.result, GachaResult.Rotate);
+  assert.equal(noRotateImport.types.special?.rotateWin, 1);
+  assert.equal(noRotateImport.records.joint?.[0]?.result, GachaResult.Lose);
+  assert.equal(noRotateImport.types.joint?.rotateWin, 0);
+
+  const legacyRerunWithRotate = rebuildHeadhuntForV3({
+    url: '',
+    types: {},
+    banners: {},
+    records: {
+      rerun_chr: [
+        {
+          ...makeRecord(1, 'rerun_chr', 'rerun_chr_unknown', 6),
+          itemId: rotatedItem,
+          result: GachaResult.Rotate,
+        },
+      ],
+    },
+  });
+  assert.equal(
+    legacyRerunWithRotate.records.rerun_chr?.[0]?.result,
+    GachaResult.Lose
+  );
+  assert.equal(legacyRerunWithRotate.types.rerun_chr?.rotateWin, 0);
+
   const migrateStorage = useStorageStore.persist.getOptions().migrate;
   assert.ok(migrateStorage);
   const migratedStorage = (await migrateStorage(

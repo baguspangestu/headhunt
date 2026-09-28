@@ -6,6 +6,7 @@ import {
   advanceGuarantee,
   advancePity,
   getGuaranteeKey,
+  supportsRotate,
   usesBannerPity,
   type GuaranteeState,
   type PityState,
@@ -117,7 +118,7 @@ export function processImportedHeadhunt(
       let result: GachaResult =
         record.itemId === banner?.rateup
           ? GachaResult.Rateup
-          : banner?.rotate?.includes(record.itemId)
+          : supportsRotate(type.id) && banner?.rotate?.includes(record.itemId)
             ? GachaResult.Rotate
             : GachaResult.Lose;
 

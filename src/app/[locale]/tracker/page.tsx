@@ -118,7 +118,10 @@ export default async function TrackerPage() {
       type.id === HeadhuntTypeId.Special ||
       type.id === HeadhuntTypeId.Joint
     ) {
-      icons = banner?.rotate?.map((id) => {
+      icons = (type.id === HeadhuntTypeId.Joint
+        ? banner?.featured
+        : banner?.rotate
+      )?.map((id) => {
         return {
           name: catalogs[id]?.name ?? id,
           url: catalogs[id]?.icon ?? '',

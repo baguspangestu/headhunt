@@ -8,6 +8,7 @@ import {
   advanceGuarantee,
   advancePity,
   getGuaranteeKey,
+  supportsRotate,
   usesBannerPity,
   type GuaranteeState,
   type PityState,
@@ -103,10 +104,15 @@ const rebuildRecords = (headhunt: Headhunt) => {
     let result = banner
       ? record.itemId === banner.rateup
         ? GachaResult.Rateup
-        : banner.rotate?.includes(record.itemId)
+        : supportsRotate(record.typeId) &&
+            banner.rotate?.includes(record.itemId)
           ? GachaResult.Rotate
           : GachaResult.Lose
-      : record.result;
+      : (record.typeId === HeadhuntTypeId.RerunChr ||
+            record.typeId === HeadhuntTypeId.Joint) &&
+          record.result === GachaResult.Rotate
+        ? GachaResult.Lose
+        : record.result;
 
     if (!isFree) {
       const nextPity = advancePity(

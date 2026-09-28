@@ -66,14 +66,22 @@ const RESULT_BADGES: Record<
   },
 };
 
-const getResultTranslationKey = (result: GachaResult, isWeapon: boolean) => {
-  if (isWeapon) {
+const getResultTranslationKey = (
+  result: GachaResult,
+  isRateupOnly: boolean
+) => {
+  if (isRateupOnly) {
     if (result === GachaResult.Lose) return 'resultWeaponLose';
     if (result === GachaResult.Rateup) return 'resultWeaponRateup';
   }
 
   return RESULT_BADGES[result].translationKey;
 };
+
+const getDisplayedResult = (record: RecordItem) =>
+  record.typeId === 'rerun_chr' && record.result === GachaResult.Rotate
+    ? GachaResult.Lose
+    : record.result;
 
 const getPityColor = ({
   pity,
@@ -114,6 +122,7 @@ export const RecentHeadhunts = ({
 }: RecentHeadhuntsProps) => {
   const t = useTranslations('TrackerPage');
   const isWeapon = hash.startsWith('weponbox') || hash === 'rerun_wpn';
+  const isRateupOnly = isWeapon || hash === 'rerun_chr';
 
   const [visible, setVisible] = useState(PAGE_SIZE);
   const [rarityFilter, setRarityFilter] = useState<string[]>(['rarity_6']);
@@ -157,7 +166,7 @@ export const RecentHeadhunts = ({
             (record) =>
               record.rarity === 6 && RATE_RESULT_TYPE_IDS.has(record.typeId)
           )
-          .map((record) => record.result)
+          .map(getDisplayedResult)
       ),
     [filteredRecords]
   );
@@ -209,7 +218,7 @@ export const RecentHeadhunts = ({
                 : t(
                     getResultTranslationKey(
                       Number(result) as GachaResult,
-                      isWeapon
+                      isRateupOnly
                     )
                   )}
             </div>
@@ -232,7 +241,7 @@ export const RecentHeadhunts = ({
             (`rarity_${record.rarity}` as keyof typeof CONFIG.enumColors.rarities);
           const resultBadge =
             record.rarity === 6 && RATE_RESULT_TYPE_IDS.has(record.typeId)
-              ? RESULT_BADGES[record.result]
+              ? RESULT_BADGES[getDisplayedResult(record)]
               : null;
 
           const pityColor = getPityColor({
@@ -252,9 +261,10 @@ export const RecentHeadhunts = ({
                       {resultBadge.label} ={' '}
                       {t(
                         getResultTranslationKey(
-                          record.result,
+                          getDisplayedResult(record),
                           record.typeId === 'weponbox' ||
-                            record.typeId === 'rerun_wpn'
+                            record.typeId === 'rerun_wpn' ||
+                            record.typeId === 'rerun_chr'
                         )
                       )}
                     </span>

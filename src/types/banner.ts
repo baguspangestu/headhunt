@@ -6,6 +6,7 @@ export type Banner = {
   image: string;
   rateup: string;
   rotate?: string[];
+  featured?: string[];
   startTime?: number;
   endTime?: number;
 };

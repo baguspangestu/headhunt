@@ -8,6 +8,9 @@ export const usesBannerPity = (typeId: string) =>
   typeId === HeadhuntTypeId.Joint ||
   typeId === HeadhuntTypeId.RerunWpn;
 
+export const supportsRotate = (typeId: string) =>
+  typeId === HeadhuntTypeId.Special;
+
 export const getGuaranteeKey = (typeId: string, bannerId: string) => {
   if (
     typeId !== HeadhuntTypeId.RerunChr &&
