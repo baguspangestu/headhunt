@@ -20,7 +20,7 @@ export const DetailRecords = ({
   const locale = useLocale();
 
   const details = useMemo(() => {
-    const isWeapon = hash.startsWith('weponbox');
+    const isWeapon = hash.startsWith('weponbox') || hash === 'rerun_wpn';
 
     const localeValue =
       CONFIG.locales.find((l) => l.id === locale)?.value ?? 'en-US';

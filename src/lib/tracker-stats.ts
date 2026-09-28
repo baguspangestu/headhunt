@@ -1,4 +1,4 @@
-import type { RecordItem } from '@/types/profile';
+import type { BannerItem, RecordItem, TypeItem } from '@/types/profile';
 import { GachaResult } from '@/types/profile';
 
 export const summarizeTrackerRecords = (records: RecordItem[]) =>
@@ -41,3 +41,55 @@ export const summarizeTrackerRecords = (records: RecordItem[]) =>
       guaranteeCount: 0,
     }
   );
+
+type AvgInput = { avg?: number; count?: number };
+type NewData = { pityCount: number; count: number };
+
+export function combineAverage(oldData: AvgInput, newData: NewData): number {
+  const oldAvg = oldData.avg ?? 0;
+  const oldCount = oldData.count ?? 0;
+  const totalCount = oldCount + newData.count;
+  if (totalCount === 0) return 0;
+  return (oldAvg * oldCount + newData.pityCount) / totalCount;
+}
+
+export function mergeTrackerStats(
+  records: RecordItem[],
+  oldData: BannerItem | TypeItem | undefined
+) {
+  const newStats = summarizeTrackerRecords(records);
+  const r4Count = (oldData?.r4Count ?? 0) + newStats.r4Count;
+  const r5Count = (oldData?.r5Count ?? 0) + newStats.r5Count;
+  const r6Count = (oldData?.r6Count ?? 0) + newStats.r6Count;
+  const freeCount = (oldData?.freeCount ?? 0) + newStats.freeCount;
+
+  const oldAttempt = (oldData?.r6Count ?? 0) - (oldData?.guarantee ?? 0);
+  const oldRotateWinCount = (oldData?.rotateWin ?? 0) * oldAttempt;
+  const oldRateupWinCount = (oldData?.rateupWin ?? 0) * oldAttempt;
+  const rotateWinCount = oldRotateWinCount + newStats.rotateWinCount;
+  const rateupWinCount = oldRateupWinCount + newStats.rateupWinCount;
+
+  const guarantee = (oldData?.guarantee ?? 0) + newStats.guaranteeCount;
+  const attempt = r6Count - guarantee;
+
+  const r5AvgPity = combineAverage(
+    { avg: oldData?.r5AvgPity, count: oldData?.r5Count },
+    { pityCount: newStats.r5PityTotal, count: newStats.r5Count }
+  );
+  const r6AvgPity = combineAverage(
+    { avg: oldData?.r6AvgPity, count: oldData?.r6Count },
+    { pityCount: newStats.r6PityTotal, count: newStats.r6Count }
+  );
+
+  return {
+    r4Count,
+    r5Count,
+    r6Count,
+    freeCount,
+    r5AvgPity,
+    r6AvgPity,
+    rotateWin: attempt > 0 ? rotateWinCount / attempt : 0,
+    rateupWin: attempt > 0 ? rateupWinCount / attempt : 0,
+    guarantee,
+  };
+}

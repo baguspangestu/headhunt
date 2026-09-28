@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { migrateProfilesToV2 } from './tracker-migration';
+import { migrateProfilesToV2, migrateProfilesToV3 } from './tracker-migration';
 import type { Profile } from '@/types/profile';
 
 const legacyNumber = z.number().nonnegative().catch(0);
@@ -36,6 +36,8 @@ const recordSchema = z.object({
   id: sequenceNumber,
   typeId: z.string().min(1),
   bannerId: z.string().min(1),
+  seriesName: z.string().min(1).optional(),
+  poolVersion: z.number().nullable().optional(),
   itemId: z.string().min(1),
   rarity: z.number().int().min(1).max(6),
   pity: legacyInteger,
@@ -54,6 +56,32 @@ const recordListSchema = z.array(z.unknown()).transform((records) =>
   })
 );
 
+const eventSchema = z.object({
+  id: sequenceNumber,
+  typeId: z.string().min(1),
+  bannerId: z.string().min(1),
+  kind: z.string().min(1),
+  timestamp: legacyInteger,
+  raw: z
+    .object({
+      kind: z.string(),
+      poolId: z.string(),
+      poolName: z.string(),
+      poolVersion: z.number().nullable(),
+      nameText: z.string().nullable(),
+      gachaTs: z.string(),
+      seqId: z.string(),
+    })
+    .passthrough(),
+});
+
+const eventListSchema = z.array(z.unknown()).transform((events) =>
+  events.flatMap((event) => {
+    const result = eventSchema.safeParse(event);
+    return result.success ? [result.data] : [];
+  })
+);
+
 const profileSchema = z.object({
   id: z.string().catch(''),
   name: z.string().optional(),
@@ -65,6 +93,8 @@ const profileSchema = z.object({
           types: z.record(z.string(), typeSchema.optional()).catch({}),
           banners: z.record(z.string(), bannerSchema.optional()).catch({}),
           records: z.record(z.string(), recordListSchema.optional()).catch({}),
+          events: z.record(z.string(), eventListSchema.optional()).optional(),
+          eventsBackfillPending: z.boolean().optional(),
         })
         .optional(),
     })
@@ -73,7 +103,7 @@ const profileSchema = z.object({
 
 const backupSchema = z.object({
   app: z.literal('headhunt.cc'),
-  version: z.union([z.literal(1), z.literal(2)]),
+  version: z.union([z.literal(1), z.literal(2), z.literal(3)]),
   includesImportUrls: z.boolean().optional(),
   exportedAt: z.iso.datetime(),
   currentProfileId: z.string().catch(''),
@@ -90,7 +120,7 @@ export const createTrackerBackup = (
   options: { includeImportUrls?: boolean } = {}
 ): TrackerBackup => ({
   app: 'headhunt.cc',
-  version: 2,
+  version: 3,
   includesImportUrls: options.includeImportUrls ?? true,
   exportedAt: new Date().toISOString(),
   currentProfileId,
@@ -131,30 +161,6 @@ const withoutImportUrls = (
     ])
   );
 
-export const getTrackerBackupProfilesForRestore = (
-  backup: TrackerBackup,
-  currentProfiles: Record<string, Profile>
-): TrackerBackup['profiles'] =>
-  backup.includesImportUrls !== false
-    ? backup.profiles
-    : Object.fromEntries(
-        Object.entries(backup.profiles).map(([id, profile]) => {
-          const currentUrl = currentProfiles[id]?.stores?.headhunt?.url;
-          if (!profile.stores?.headhunt || !currentUrl) return [id, profile];
-
-          return [
-            id,
-            {
-              ...profile,
-              stores: {
-                ...profile.stores,
-                headhunt: { ...profile.stores.headhunt, url: currentUrl },
-              },
-            },
-          ];
-        })
-      );
-
 export const calculateTrackerBackupHash = async (
   backup: TrackerBackup,
   options: { includeImportUrls?: boolean } = {}
@@ -188,10 +194,11 @@ export const isTrackerBackupEqualToProfiles = async (
   const localBackup = parseTrackerBackup(
     createTrackerBackup(profiles, currentProfileId)
   );
-  const includeImportUrls = backup.includesImportUrls !== false;
+  // Restore replaces the full profile, including its URL. A URL-free backup
+  // must not be considered identical to a browser profile with a saved URL.
   const [backupHash, localHash] = await Promise.all([
-    calculateTrackerBackupHash(backup, { includeImportUrls }),
-    calculateTrackerBackupHash(localBackup, { includeImportUrls }),
+    calculateTrackerBackupHash(backup, { includeImportUrls: true }),
+    calculateTrackerBackupHash(localBackup, { includeImportUrls: true }),
   ]);
 
   return backupHash === localHash;
@@ -206,12 +213,16 @@ export const parseTrackerBackup = (value: unknown): TrackerBackup => {
     ])
   );
   const profiles =
-    backup.version === 1
-      ? migrateProfilesToV2(normalizedProfiles)
-      : normalizedProfiles;
+    backup.version === 3
+      ? migrateProfilesToV3(normalizedProfiles, false)
+      : migrateProfilesToV3(
+          backup.version === 1
+            ? migrateProfilesToV2(normalizedProfiles)
+            : normalizedProfiles
+        );
   const currentProfileId = profiles[backup.currentProfileId]
     ? backup.currentProfileId
     : Object.keys(profiles)[0];
 
-  return { ...backup, version: 2, profiles, currentProfileId };
+  return { ...backup, version: 3, profiles, currentProfileId };
 };

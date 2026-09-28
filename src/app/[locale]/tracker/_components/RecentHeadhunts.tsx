@@ -20,7 +20,12 @@ type RecentHeadhuntsProps = {
 };
 
 const PAGE_SIZE = 50;
-const RATE_RESULT_TYPE_IDS = new Set(['special', 'weponbox']);
+const RATE_RESULT_TYPE_IDS = new Set([
+  'special',
+  'weponbox',
+  'rerun_chr',
+  'rerun_wpn',
+]);
 
 const isIncluded = <T,>(filter: T[], value: T) =>
   filter.length === 0 || filter.includes(value);
@@ -108,7 +113,7 @@ export const RecentHeadhunts = ({
   guaranteedLimit,
 }: RecentHeadhuntsProps) => {
   const t = useTranslations('TrackerPage');
-  const isWeapon = hash.startsWith('weponbox');
+  const isWeapon = hash.startsWith('weponbox') || hash === 'rerun_wpn';
 
   const [visible, setVisible] = useState(PAGE_SIZE);
   const [rarityFilter, setRarityFilter] = useState<string[]>(['rarity_6']);
@@ -248,7 +253,8 @@ export const RecentHeadhunts = ({
                       {t(
                         getResultTranslationKey(
                           record.result,
-                          record.typeId === 'weponbox'
+                          record.typeId === 'weponbox' ||
+                            record.typeId === 'rerun_wpn'
                         )
                       )}
                     </span>
