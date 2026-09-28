@@ -153,6 +153,41 @@ async function main() {
       true
     );
 
+    // HTTP access through a LAN IP has no Web Crypto subtle API. Local JSON
+    // restore must still distinguish identical and URL-free backups.
+    const cryptoDescriptor = Object.getOwnPropertyDescriptor(
+      globalThis,
+      'crypto'
+    );
+    Object.defineProperty(globalThis, 'crypto', {
+      configurable: true,
+      value: {},
+    });
+    try {
+      assert.equal(
+        await isTrackerBackupEqualToProfiles(
+          parseTrackerBackup(backupWithUrl),
+          { 'with-url': profileWithUrl },
+          'with-url'
+        ),
+        true
+      );
+      assert.equal(
+        await isTrackerBackupEqualToProfiles(
+          parseTrackerBackup(privateBackup),
+          { 'with-url': profileWithUrl },
+          'with-url'
+        ),
+        false
+      );
+    } finally {
+      if (cryptoDescriptor) {
+        Object.defineProperty(globalThis, 'crypto', cryptoDescriptor);
+      } else {
+        delete (globalThis as { crypto?: Crypto }).crypto;
+      }
+    }
+
     useStorageStore
       .getState()
       .restoreProfiles(backupWithUrl.profiles, backupWithUrl.currentProfileId);

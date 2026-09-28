@@ -96,22 +96,26 @@ export default async function TrackerPage() {
         ];
 
     if (type.id === HeadhuntTypeId.Weponbox) {
-      const primary = weaponTypes
-        .slice(1, 3)
+      const activeWeaponIcons = weaponTypes
+        .slice(0, 3)
         .flatMap((weaponType) => weaponType.icons);
-      const subIcons =
-        primary.length >= 2
-          ? primary
-          : sortedBanners
-              .filter((banner) => banner.id.startsWith(HeadhuntTypeId.Weponbox))
-              .slice(1, 3)
-              .map((weaponBanner) => {
-                return {
-                  name: catalogs[weaponBanner.rateup].name,
-                  url: catalogs[weaponBanner.rateup].icon,
-                };
-              });
-      icons.push(...subIcons);
+      const activeWeaponIds = new Set(
+        weaponTypes.map((weaponType) => weaponType.id)
+      );
+      const previousWeaponIcons = sortedBanners
+        .filter(
+          (weaponBanner) =>
+            weaponBanner.id.startsWith(HeadhuntTypeId.Weponbox) &&
+            (weaponBanner.startTime ?? 0) <= now &&
+            !activeWeaponIds.has(weaponBanner.id)
+        )
+        .slice(0, 3 - activeWeaponIcons.length)
+        .map((weaponBanner) => ({
+          name: catalogs[weaponBanner.rateup]?.name ?? weaponBanner.rateup,
+          url: catalogs[weaponBanner.rateup]?.icon ?? '',
+        }));
+      icons = [...activeWeaponIcons, ...previousWeaponIcons];
+      if (icons.length === 0) icons = [{ name: typeName, url: type.icon }];
     }
 
     if (
