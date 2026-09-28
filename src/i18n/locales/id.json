@@ -448,6 +448,7 @@
         "runBookmarkDesc": "Saat masih berada di Record Book resmi, buka bookmark import. Setelah muncul pesan berhasil, kembali ke sini dan paste URL yang sudah disalin di bawah. Server game-mu akan dideteksi otomatis saat import."
       },
       "WindowsSteps": {
+        "videoGuide": "Video panduan import Windows",
         "openHeadHuntingTitle": "Buka Detail Headhunt",
         "openHeadHuntingDesc": "Jalankan <game>Arknights: Endfield</game>, lalu buka menu <menu>Detail Headhunt</menu> supaya URL riwayat gacha dapat terbaca.",
         "openPowerShellTitle": "Buka Windows PowerShell",

@@ -173,6 +173,17 @@ export const ImportRecords = ({ isOpen, onClose }: ImportRecordsProps) => {
           resetKey={isOpen}
         >
           <div className="flex flex-col gap-3">
+            <div className="overflow-hidden rounded-xl bg-white/5">
+              <iframe
+                className="aspect-video w-full"
+                src="https://www.youtube-nocookie.com/embed/NQUQrlTbc90"
+                title={t('WindowsSteps.videoGuide')}
+                loading="lazy"
+                referrerPolicy="strict-origin-when-cross-origin"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowFullScreen
+              />
+            </div>
             <Step number={1} title={t('WindowsSteps.openHeadHuntingTitle')}>
               {t.rich('WindowsSteps.openHeadHuntingDesc', {
                 game: (chunks) => (
