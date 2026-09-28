@@ -90,6 +90,27 @@ function getSKPortGuideWeaponId(
   return skill.key.slice(3);
 }
 
+function placeMaleEndministratorFirst<T>(
+  items: T[],
+  getId: (item: T) => string
+): T[] {
+  const maleIndex = items.findIndex(
+    (item) => getId(item) === 'chr_0002_endminm'
+  );
+  const femaleIndex = items.findIndex(
+    (item) => getId(item) === 'chr_0003_endminf'
+  );
+
+  if (maleIndex < 0 || femaleIndex < 0 || maleIndex < femaleIndex) {
+    return items;
+  }
+
+  const ordered = [...items];
+  const [male] = ordered.splice(maleIndex, 1);
+  ordered.splice(femaleIndex, 0, male);
+  return ordered;
+}
+
 function transformEnum<T extends Record<string, string>>({
   json,
   enumPicks,
@@ -123,7 +144,10 @@ function transformOperator({
   json: SKPortGuideOperators;
   extraMap: Map<string, OperatorExtra>;
 }) {
-  return json.data.chars.map((op) => {
+  return placeMaleEndministratorFirst(
+    json.data.chars,
+    getSKPortGuideOperatorId
+  ).map((op) => {
     const id = getSKPortGuideOperatorId(op);
     const extra = extraMap.get(id);
 
@@ -205,7 +229,10 @@ function transformCatalog({
 
   for (const file of files) {
     const items = [
-      ...(operatorsDataMap[file]?.data.chars ?? []).map((op) => {
+      ...placeMaleEndministratorFirst(
+        operatorsDataMap[file]?.data.chars ?? [],
+        getSKPortGuideOperatorId
+      ).map((op) => {
         const id = getSKPortGuideOperatorId(op);
 
         return [
