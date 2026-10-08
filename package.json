@@ -45,12 +45,12 @@
     "test:tracker-v3": "tsx tests/tracker-v3.test.ts"
   },
   "dependencies": {
-    "@next/third-parties": "^16.3.6",
-    "@opennextjs/cloudflare": "^1.20.6",
+    "@next/third-parties": "^16.3.8",
+    "@opennextjs/cloudflare": "^1.20.7",
     "clsx": "^2.1.1",
     "lz-string": "^1.5.0",
-    "next": "^16.3.6",
-    "next-intl": "^4.14.7",
+    "next": "^16.3.8",
+    "next-intl": "^4.14.8",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",
     "react-icons": "^5.7.0",
