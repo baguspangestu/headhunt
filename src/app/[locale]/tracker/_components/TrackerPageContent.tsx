@@ -98,7 +98,13 @@ export const TrackerPageContent = ({
   );
 
   const sidebarTypes = useMemo(() => {
-    const bottomTypeIds = new Set(['joint', 'standard', 'beginner']);
+    const bottomTypeIds = new Set([
+      'rerun_chr',
+      'rerun_wpn',
+      'joint',
+      'standard',
+      'beginner',
+    ]);
     return [
       ...types.operatorTypes.filter((type) => !bottomTypeIds.has(type.id)),
       ...types.weaponTypes,

@@ -4,9 +4,9 @@ export function getActiveLimitedBanners(banners: Banners, now: number) {
   return Object.values(banners)
     .filter(
       (banner) =>
-        !banner.id.startsWith('weaponbox') &&
         now >= (banner.startTime ?? 0) &&
-        now <= (banner.endTime ?? Infinity)
+        now <= (banner.endTime ?? Infinity) &&
+        banner.startTime != null
     )
     .sort((a, b) => (b.startTime ?? 0) - (a.startTime ?? 0));
 }

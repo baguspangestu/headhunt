@@ -51,7 +51,12 @@ export default async function TrackerPage() {
   });
 
   const weaponTypes = activeBanners
-    .filter((banner) => banner.id.startsWith(HeadhuntTypeId.Weponbox))
+    .filter(
+      (banner) =>
+        [HeadhuntTypeId.Weponbox, 'weaponbox'].some((typeId) =>
+          banner.id.startsWith(typeId)
+        ) && banner.startTime != null
+    )
     .map((banner) => {
       return {
         id: banner.id,

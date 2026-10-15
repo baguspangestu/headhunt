@@ -177,7 +177,10 @@ export const BannerItem = ({
           })
       : undefined;
 
-  const hash = id.startsWith('weponbox') ? id : id.split('_')[0];
+  const hash =
+    id.startsWith('weponbox') || id.startsWith('weaponbox')
+      ? id
+      : id.split('_')[0];
   return (
     <Link
       href={`/tracker#${hash}`}
