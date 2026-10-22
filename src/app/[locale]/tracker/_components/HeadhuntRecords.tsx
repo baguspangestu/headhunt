@@ -63,10 +63,7 @@ export const HeadhuntRecords = ({
   const isWeapon = hash.startsWith('weponbox') || hash === 'rerun_wpn';
   const hideBanner = hash === 'standard' || hash === 'beginner';
 
-  const [rarityFilter, setRarityFilter] = useState<string[]>([
-    'rarity_5',
-    'rarity_6',
-  ]);
+  const [rarityFilter, setRarityFilter] = useState<string[]>([]);
 
   const handleChangeRarity = (values: string[]) => {
     setRarityFilter(values);
