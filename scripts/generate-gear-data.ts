@@ -119,6 +119,16 @@ async function readJson<T>(filePath: string): Promise<T | null> {
   }
 }
 
+function uniqueById<T extends { id: string }>(items: T[]): T[] {
+  const seenIds = new Set<string>();
+
+  return items.filter((item) => {
+    if (seenIds.has(item.id)) return false;
+    seenIds.add(item.id);
+    return true;
+  });
+}
+
 async function buildImageMap(
   equips: { id: string; name: string; iconUrl: string }[]
 ) {
@@ -148,9 +158,10 @@ async function main() {
   );
   if (!englishGuide) throw new Error('English gear guide data is missing');
 
-  const imageMap = await buildImageMap(englishGuide.data.equips);
+  const englishEquips = uniqueById(englishGuide.data.equips);
+  const imageMap = await buildImageMap(englishEquips);
   const englishNameById = new Map(
-    englishGuide.data.equips.map((equip) => [equip.id, equip.name])
+    englishEquips.map((equip) => [equip.id, equip.name])
   );
   const wikiDirs = await fs.readdir(paths.wiki, { withFileTypes: true });
   const wikiMap = new Map<string, RawWikiDetail>();
@@ -170,6 +181,7 @@ async function main() {
     if (!guide) {
       throw new Error(`Gear guide data is missing or invalid for ${locale.id}`);
     }
+    const equips = uniqueById(guide.data.equips);
 
     const options = (values: { id: string; name: string }[]) =>
       Object.values(
@@ -181,25 +193,25 @@ async function main() {
 
     filtersOutput[`${locale.id}.json`] = {
       rarities: options(
-        guide.data.equips.map((equip) => ({
+        equips.map((equip) => ({
           id: equip.rarity.key,
           name: equip.rarity.value,
         }))
       ),
       types: options(
-        guide.data.equips.map((equip) => ({
+        equips.map((equip) => ({
           id: equip.type.key,
           name: equip.type.value,
         }))
       ),
       levels: options(
-        guide.data.equips.map((equip) => ({
+        equips.map((equip) => ({
           id: equip.level.key,
           name: equip.level.value,
         }))
       ),
       properties: options(
-        guide.data.equips.flatMap((equip) =>
+        equips.flatMap((equip) =>
           equip.properties.map((property) => ({
             id: property,
             name: property.replace('equip_attr_', '').replaceAll('_', ' '),
@@ -207,7 +219,7 @@ async function main() {
         )
       ),
       suits: options(
-        guide.data.equips
+        equips
           .filter((equip) => equip.suit)
           .map((equip) => ({ id: equip.suit!.id, name: equip.suit!.name }))
       ),
@@ -224,7 +236,7 @@ async function main() {
     };
 
     output[`${locale.id}.json`] = Object.fromEntries(
-      guide.data.equips.map((equip) => {
+      equips.map((equip) => {
         const detail = extractDetail(
           wikiMap.get(slugify(englishNameById.get(equip.id) ?? equip.name))
         );
@@ -247,9 +259,7 @@ async function main() {
         ];
       })
     );
-    logger.info(
-      `Generated ${guide.data.equips.length} gear items for ${locale.id}`
-    );
+    logger.info(`Generated ${equips.length} gear items for ${locale.id}`);
   }
 
   await writeJsonFiles(output, paths.output);

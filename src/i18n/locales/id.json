@@ -11,6 +11,21 @@
   "ChangelogPage": {
     "title": "Log Perubahan",
     "description": "Lihat fitur baru, peningkatan, dan perbaikan terbaru di Headhunt.cc.",
+    "catalogReleaseTitle": "Katalog Senjata dan Filter Tracker Lebih Rapi",
+    "catalogChanges": {
+      "weaponDetails": {
+        "title": "Detail Senjata Diperbarui",
+        "description": "Deskripsi skill dan teks lokal senjata telah diperbarui agar detail item lebih jelas dalam bahasa yang didukung."
+      },
+      "duplicateWeapons": {
+        "title": "Entri Senjata Duplikat Dihapus",
+        "description": "Data senjata berulang kini diringkas menjadi satu entri katalog, sehingga senjata yang sama tidak tampil dua kali."
+      },
+      "rarityDefaults": {
+        "title": "Semua Rarity Tampil Secara Default",
+        "description": "Filter rarity tracker kini menampilkan semua rarity sejak awal, termasuk pull rarity rendah, kecuali filternya dipersempit."
+      }
+    },
     "trackerV3ReleaseTitle": "Tracker V3 dan Headhunt RE-Faktor",
     "trackerV3Changes": {
       "refactorBanners": {

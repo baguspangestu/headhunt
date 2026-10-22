@@ -144,34 +144,40 @@ function transformOperator({
   json: SKPortGuideOperators;
   extraMap: Map<string, OperatorExtra>;
 }) {
-  return placeMaleEndministratorFirst(
-    json.data.chars,
-    getSKPortGuideOperatorId
-  ).map((op) => {
-    const id = getSKPortGuideOperatorId(op);
-    const extra = extraMap.get(id);
+  const seenOperatorIds = new Set<string>();
 
-    const slug =
-      (extra?.slug ?? '') +
-      (id === 'chr_0002_endminm'
-        ? '-m'
-        : id === 'chr_0003_endminf'
-          ? '-f'
-          : '');
+  return placeMaleEndministratorFirst(json.data.chars, getSKPortGuideOperatorId)
+    .filter((op) => {
+      const id = getSKPortGuideOperatorId(op);
+      if (seenOperatorIds.has(id)) return false;
+      seenOperatorIds.add(id);
+      return true;
+    })
+    .map((op) => {
+      const id = getSKPortGuideOperatorId(op);
+      const extra = extraMap.get(id);
 
-    const data: Operator = {
-      id,
-      slug,
-      name: op.name,
-      avatar: extra?.avatarRt || '',
-      rarityId: op.rarity.key,
-      elementId: op.property.key,
-      opClassId: op.profession.key,
-      ...(op.labelType ? { labelType: op.labelType } : {}),
-    };
+      const slug =
+        (extra?.slug ?? '') +
+        (id === 'chr_0002_endminm'
+          ? '-m'
+          : id === 'chr_0003_endminf'
+            ? '-f'
+            : '');
 
-    return data;
-  });
+      const data: Operator = {
+        id,
+        slug,
+        name: op.name,
+        avatar: extra?.avatarRt || '',
+        rarityId: op.rarity.key,
+        elementId: op.property.key,
+        opClassId: op.profession.key,
+        ...(op.labelType ? { labelType: op.labelType } : {}),
+      };
+
+      return data;
+    });
 }
 
 function transformWeapon({
@@ -185,8 +191,13 @@ function transformWeapon({
   extraMap: Map<string, WeaponExtra>;
   detailMap: Map<string, Map<string, Map<string, WeaponDetail>>>;
 }) {
-  return json.data.weapons.map((wp) => {
+  const seenWeaponIds = new Set<string>();
+
+  return json.data.weapons.flatMap((wp) => {
     const id = getSKPortGuideWeaponId(wp);
+    if (seenWeaponIds.has(id)) return [];
+    seenWeaponIds.add(id);
+
     const extra = extraMap.get(id);
 
     const slug = extra?.slug ?? '';
@@ -205,7 +216,7 @@ function transformWeapon({
       ...(wp.labelType ? { labelType: wp.labelType } : {}),
     };
 
-    return data;
+    return [data];
   });
 }
 
