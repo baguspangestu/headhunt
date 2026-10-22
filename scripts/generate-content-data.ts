@@ -185,8 +185,13 @@ function transformWeapon({
   extraMap: Map<string, WeaponExtra>;
   detailMap: Map<string, Map<string, Map<string, WeaponDetail>>>;
 }) {
-  return json.data.weapons.map((wp) => {
+  const seenWeaponIds = new Set<string>();
+
+  return json.data.weapons.flatMap((wp) => {
     const id = getSKPortGuideWeaponId(wp);
+    if (seenWeaponIds.has(id)) return [];
+    seenWeaponIds.add(id);
+
     const extra = extraMap.get(id);
 
     const slug = extra?.slug ?? '';
@@ -205,7 +210,7 @@ function transformWeapon({
       ...(wp.labelType ? { labelType: wp.labelType } : {}),
     };
 
-    return data;
+    return [data];
   });
 }
 
