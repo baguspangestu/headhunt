@@ -11,6 +11,21 @@
   "ChangelogPage": {
     "title": "Changelog",
     "description": "See the latest features, improvements, and fixes on Headhunt.cc.",
+    "catalogReleaseTitle": "A Cleaner Weapon Catalog and Tracker Filters",
+    "catalogChanges": {
+      "weaponDetails": {
+        "title": "Updated Weapon Details",
+        "description": "Weapon skill descriptions and locale text have been refreshed, making item details clearer in the supported languages."
+      },
+      "duplicateWeapons": {
+        "title": "Duplicate Weapons Removed",
+        "description": "Repeated weapon records from the game data are now reduced to one catalog entry, so the same weapon no longer appears twice."
+      },
+      "rarityDefaults": {
+        "title": "All Rarities Shown by Default",
+        "description": "Tracker rarity filters now start with every rarity visible, including lower-rarity pulls, unless you narrow the filter."
+      }
+    },
     "trackerV3ReleaseTitle": "Tracker V3 and RE-Factor Headhunting",
     "trackerV3Changes": {
       "refactorBanners": {
