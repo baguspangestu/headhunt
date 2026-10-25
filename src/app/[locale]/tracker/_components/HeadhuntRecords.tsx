@@ -60,7 +60,10 @@ export const HeadhuntRecords = ({
   const [visible, setVisible] = useState(PAGE_SIZE);
   const loadMoreRef = useRef<HTMLDivElement | null>(null);
 
-  const isWeapon = hash.startsWith('weponbox') || hash === 'rerun_wpn';
+  const isWeapon =
+    hash.startsWith('weponbox_') ||
+    hash.startsWith('weaponbox_') ||
+    hash === 'rerun_wpn';
   const hideBanner = hash === 'standard' || hash === 'beginner';
 
   const [rarityFilter, setRarityFilter] = useState<string[]>([]);

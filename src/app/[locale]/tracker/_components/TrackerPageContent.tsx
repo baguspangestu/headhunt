@@ -146,10 +146,10 @@ export const TrackerPageContent = ({
     const bannerIds = new Set<string>();
 
     const isMainType = new Set([
-      'rerun_chr',
-      'rerun_wpn',
       'special',
       'weponbox',
+      'rerun_chr',
+      'rerun_wpn',
       'joint',
     ]).has(hash);
 
@@ -166,7 +166,9 @@ export const TrackerPageContent = ({
         ? source.filter((record) => record.bannerId === selectedBannerId)
         : source;
     } else {
-      const baseKey = hash.split('_')[0];
+      const baseKey = hash.startsWith('weaponbox_')
+        ? HeadhuntTypeId.Weponbox
+        : hash.split('_')[0];
       const source = allRecords?.[baseKey] ?? [];
 
       result = source.filter((r) => r.bannerId === hash);
@@ -274,7 +276,9 @@ export const TrackerPageContent = ({
           <div className="overflow-hidden rounded-xl xl:bg-neutral-900/35">
             <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 xl:flex xl:max-h-[calc(100dvh-9.5rem)] xl:flex-col xl:overflow-y-auto xl:overscroll-contain xl:pr-1.5">
               {sidebarTypes.map((type) => {
-                const isWeaponBanner = type.id.startsWith('weponbox_');
+                const isWeaponBanner =
+                  type.id.startsWith('weponbox_') ||
+                  type.id.startsWith('weaponbox_');
                 const pityBannerId =
                   type.id === HeadhuntTypeId.RerunWpn
                     ? hash === HeadhuntTypeId.RerunWpn &&
