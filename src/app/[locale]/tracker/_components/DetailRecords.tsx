@@ -20,7 +20,10 @@ export const DetailRecords = ({
   const locale = useLocale();
 
   const details = useMemo(() => {
-    const isWeapon = hash.startsWith('weponbox') || hash === 'rerun_wpn';
+    const isWeapon =
+      hash.startsWith('weponbox_') ||
+      hash.startsWith('weaponbox_') ||
+      hash === 'rerun_wpn';
     const isRerunCharacter = hash === 'rerun_chr';
 
     const localeValue =

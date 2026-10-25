@@ -121,7 +121,10 @@ export const RecentHeadhunts = ({
   guaranteedLimit,
 }: RecentHeadhuntsProps) => {
   const t = useTranslations('TrackerPage');
-  const isWeapon = hash.startsWith('weponbox') || hash === 'rerun_wpn';
+  const isWeapon =
+    hash.startsWith('weponbox_') ||
+    hash.startsWith('weaponbox_') ||
+    hash === 'rerun_wpn';
   const isRateupOnly = isWeapon || hash === 'rerun_chr';
 
   const [visible, setVisible] = useState(PAGE_SIZE);

@@ -11,6 +11,13 @@
   "ChangelogPage": {
     "title": "Log Perubahan",
     "description": "Lihat fitur baru, peningkatan, dan perbaikan terbaru di Headhunt.cc.",
+    "trackerWeaponboxReleaseTitle": "Riwayat Banner Weaponbox Diperbaiki",
+    "trackerWeaponboxChanges": {
+      "bannerRecords": {
+        "title": "Record Banner Weaponbox Ditampilkan dengan Benar",
+        "description": "Banner weaponbox dengan awalan ID `weaponbox_` kini mengambil riwayat pull dari kategori yang tepat, sehingga daftar pull banner terpilih tampil dengan benar."
+      }
+    },
     "catalogReleaseTitle": "Katalog Senjata dan Filter Tracker Lebih Rapi",
     "catalogChanges": {
       "weaponDetails": {

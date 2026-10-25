@@ -11,6 +11,13 @@
   "ChangelogPage": {
     "title": "Changelog",
     "description": "See the latest features, improvements, and fixes on Headhunt.cc.",
+    "trackerWeaponboxReleaseTitle": "Weaponbox Banner History Fixed",
+    "trackerWeaponboxChanges": {
+      "bannerRecords": {
+        "title": "Weaponbox Banner Records Display Correctly",
+        "description": "Weaponbox banners with the `weaponbox_` ID prefix now load pulls from the correct history category, so the selected banner's pull list appears as expected."
+      }
+    },
     "catalogReleaseTitle": "A Cleaner Weapon Catalog and Tracker Filters",
     "catalogChanges": {
       "weaponDetails": {
