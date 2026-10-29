@@ -177,8 +177,9 @@ export const BannerItem = ({
           })
       : undefined;
 
-  const hash =
-    id.startsWith('weponbox') || id.startsWith('weaponbox')
+  const hash = id.startsWith('rerun_')
+    ? id.split('_').slice(0, 2).join('_')
+    : id.startsWith('weponbox') || id.startsWith('weaponbox')
       ? id
       : id.split('_')[0];
   return (
