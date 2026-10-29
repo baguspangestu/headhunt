@@ -244,5 +244,19 @@ export const bannerPoolConfig = {
       img: 'https://web-static.hg-cdn.com/upload/image/20261012/d5cc5abd55bbdfb8ffc04bdc919871ff.jpg',
       startAt: '2026-10-15T06:00:00+08:00',
     },
+
+    //? Tangtang
+    {
+      id: 'rerun_chr_tangtang',
+      img: 'https://web-static.hg-cdn.com/upload/image/20261027/28661d5d2790135af15403a5f4570e30.png',
+      startAt: '2026-10-29T12:00:00+08:00',
+      endAt: '2026-11-19T05:59:59+08:00',
+    },
+    {
+      id: 'rerun_wpn_tangtang',
+      img: 'https://web-static.hg-cdn.com/upload/image/20261027/a96d0a953385fe54192e761bfb11f262.png',
+      startAt: '2026-10-29T12:00:00+08:00',
+      endAt: '2026-11-19T05:59:59+08:00',
+    },
   ],
 } as const;
