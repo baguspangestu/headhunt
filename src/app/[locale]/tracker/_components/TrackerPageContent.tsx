@@ -5,7 +5,12 @@ import { PageTitle } from '@/components/ui/PageTitle';
 import { useTranslations } from 'next-intl';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useHash } from '@/hooks/useHash';
-import { FaDownload, FaFileImport, FaGear } from 'react-icons/fa6';
+import {
+  FaCircleInfo,
+  FaDownload,
+  FaFileImport,
+  FaGear,
+} from 'react-icons/fa6';
 import { FaSyncAlt } from 'react-icons/fa';
 import type { Banners } from '@/types/banner';
 import { Button } from '@/components/ui/Button';
@@ -339,6 +344,18 @@ export const TrackerPageContent = ({
             </div>
           ) : profile?.stores?.headhunt?.records ? (
             <>
+              {(hash === HeadhuntTypeId.RerunChr ||
+                hash === HeadhuntTypeId.RerunWpn) && (
+                <div
+                  role="note"
+                  className="flex items-start gap-3 rounded-xl bg-yellow-500/10 p-3 text-yellow-200"
+                >
+                  <FaCircleInfo className="mt-0.5 shrink-0" />
+                  <p className="text-sm text-yellow-100/75">
+                    {t('rerunPityNotice')}
+                  </p>
+                </div>
+              )}
               {bannerIds.size > 0 && (
                 <RecentBanners
                   key={`wp-types-${hash}`}
