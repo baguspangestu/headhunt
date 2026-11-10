@@ -212,6 +212,7 @@ export const bannerPoolConfig = {
       id: 'weponbox_1_5_1',
       img: 'https://web-static.hg-cdn.com/upload/image/20260831/1fa64d6d6c246d14746eae5817dec485.jpg',
       startAt: '2026-09-02T06:00:00+08:00',
+      endAt: '2026-11-25T11:59:59+08:00',
     },
 
     //? Yvone
@@ -257,6 +258,19 @@ export const bannerPoolConfig = {
       img: 'https://web-static.hg-cdn.com/upload/image/20261027/a96d0a953385fe54192e761bfb11f262.png',
       startAt: '2026-10-29T12:00:00+08:00',
       endAt: '2026-11-19T05:59:59+08:00',
+    },
+
+    //? Argent Flow
+    {
+      id: 'special_1_6_2',
+      img: 'https://web-static.hg-cdn.com/upload/image/20261030/467bbe01a6b6b78719677a59ead1b2b5.jpg',
+      startAt: '2026-11-05T12:00:00+08:00',
+      endAt: '2026-11-25T05:59:59+08:00',
+    },
+    {
+      id: 'weaponbox_1_6_2',
+      img: 'https://web-static.hg-cdn.com/upload/image/20261103/4d486c712d74b1f68db730421238894f.png',
+      startAt: '2026-11-05T12:00:00+08:00',
     },
   ],
 } as const;
