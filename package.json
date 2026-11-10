@@ -76,8 +76,9 @@
   },
   "overrides": {
     "sharp": "$sharp",
-    "@node-minify/core": {
-      "glob": "10.5.0"
+    "glob": "14.0.2",
+    "@typescript-eslint/typescript-estree": {
+      "minimatch": "11.0.1"
     },
     "miniflare@5.20261019.1-beta": {
       "undici": "7.30.1"
