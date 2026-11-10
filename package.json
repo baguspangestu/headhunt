@@ -45,11 +45,11 @@
     "test:tracker-v3": "tsx tests/tracker-v3.test.ts"
   },
   "dependencies": {
-    "@next/third-parties": "16.4.2",
-    "@opennextjs/cloudflare": "1.20.13",
+    "@next/third-parties": "16.4.3",
+    "@opennextjs/cloudflare": "1.20.14",
     "clsx": "^2.1.1",
     "lz-string": "^1.5.0",
-    "next": "16.4.2",
+    "next": "16.4.3",
     "next-intl": "^4.14.9",
     "react": "^19.3.1",
     "react-dom": "^19.3.1",
@@ -59,20 +59,20 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
-    "@types/node": "^26.6.5",
+    "@types/node": "^26.6.6",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
     "eslint": "^9.39.5",
-    "eslint-config-next": "^16.4.2",
+    "eslint-config-next": "^16.4.5",
     "eslint-config-prettier": "^10.1.8",
     "prettier": "^3.9.10",
     "prettier-plugin-tailwindcss": "^0.8.1",
-    "puppeteer-core": "^25.15.0",
+    "puppeteer-core": "^25.16.0",
     "sharp": "^0.35.5",
     "tailwindcss": "^4",
     "tsx": "^4.23.15",
     "typescript": "^5.9.3",
-    "wrangler": "^4.151.3"
+    "wrangler": "^4.157.0"
   },
   "overrides": {
     "sharp": "$sharp",
