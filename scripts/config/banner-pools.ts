@@ -290,5 +290,19 @@ export const bannerPoolConfig = {
       img: 'https://web-static.hg-cdn.com/upload/image/20261123/1a1a74a266584b68cf51ed291823275d.png',
       startAt: '2026-11-25T06:00:00+08:00',
     },
+
+    //? Gilberta
+    {
+      id: 'rerun_chr_aglina',
+      img: 'https://web-static.hg-cdn.com/upload/image/20261123/354409f0a289a1e41dc2e0da427b031a.png',
+      startAt: '2026-11-25T06:00:00+08:00',
+      endAt: '2026-12-16T11:59:59+08:00',
+    },
+    {
+      id: 'rerun_wpn_aglina',
+      img: 'https://web-static.hg-cdn.com/upload/image/20261123/a5c3ef86e31699240936bd61536cadb1.png',
+      startAt: '2026-11-25T06:00:00+08:00',
+      endAt: '2026-12-16T11:59:59+08:00',
+    },
   ],
 } as const;
