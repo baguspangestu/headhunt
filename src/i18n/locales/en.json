@@ -11,6 +11,13 @@
   "ChangelogPage": {
     "title": "Changelog",
     "description": "See the latest features, improvements, and fixes on Headhunt.cc.",
+    "version17ReleaseTitle": "Version 1.7: Kay's Banners",
+    "version17Changes": {
+      "kayBanners": {
+        "title": "Kay's Character and Weapon Banners",
+        "description": "Kay's version 1.7 character banner and the linked Casual Roamer Issue weapon banner are now available in Headhunt and the tracker."
+      }
+    },
     "trackerWeaponboxReleaseTitle": "Weaponbox Banner History Fixed",
     "trackerWeaponboxChanges": {
       "bannerRecords": {
