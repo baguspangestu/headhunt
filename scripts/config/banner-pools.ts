@@ -244,6 +244,7 @@ export const bannerPoolConfig = {
       id: 'weaponbox_1_6_1',
       img: 'https://web-static.hg-cdn.com/upload/image/20261012/d5cc5abd55bbdfb8ffc04bdc919871ff.jpg',
       startAt: '2026-10-15T06:00:00+08:00',
+      endAt: '2026-12-23T11:59:59+08:00',
     },
 
     //? Tangtang
@@ -271,6 +272,23 @@ export const bannerPoolConfig = {
       id: 'weaponbox_1_6_2',
       img: 'https://web-static.hg-cdn.com/upload/image/20261103/4d486c712d74b1f68db730421238894f.png',
       startAt: '2026-11-05T12:00:00+08:00',
+    },
+
+    //!------------
+    //! Version 1.7
+    //!------------
+
+    //? Si
+    {
+      id: 'special_1_7_1',
+      img: 'https://web-static.hg-cdn.com/upload/image/20261123/6f1f2e527d5d6cadb336b72a5bec8620.png',
+      startAt: '2026-11-25T06:00:00+08:00',
+      endAt: '2026-12-23T11:59:59+08:00',
+    },
+    {
+      id: 'weaponbox_1_7_1',
+      img: 'https://web-static.hg-cdn.com/upload/image/20261123/1a1a74a266584b68cf51ed291823275d.png',
+      startAt: '2026-11-25T06:00:00+08:00',
     },
   ],
 } as const;
