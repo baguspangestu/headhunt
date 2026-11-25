@@ -20,6 +20,13 @@ import {
 
 const releases = [
   {
+    id: '2026.11.25',
+    date: '2026-11-25T00:00:00+07:00',
+    titleKey: 'version17ReleaseTitle',
+    changesKey: 'version17Changes',
+    changes: [{ key: 'kayBanners', icon: FaList }],
+  },
+  {
     id: '2026.10.26',
     date: '2026-10-26T00:00:00+07:00',
     titleKey: 'trackerWeaponboxReleaseTitle',
