@@ -11,6 +11,13 @@
   "ChangelogPage": {
     "title": "Log Perubahan",
     "description": "Lihat fitur baru, peningkatan, dan perbaikan terbaru di Headhunt.cc.",
+    "version17ReleaseTitle": "Banner Kay Versi 1.7",
+    "version17Changes": {
+      "kayBanners": {
+        "title": "Banner Karakter dan Senjata Kay",
+        "description": "Banner karakter Kay versi 1.7 dan banner senjata Casual Roamer Issue yang terkait kini tersedia di Headhunt dan tracker."
+      }
+    },
     "trackerWeaponboxReleaseTitle": "Riwayat Banner Weaponbox Diperbaiki",
     "trackerWeaponboxChanges": {
       "bannerRecords": {
